@@ -14,6 +14,8 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Tone.js for shutter & beep sound effects -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- MediaPipe FaceMesh for Real-Time AR Face Effects -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 
     <script>
         tailwind.config = {
@@ -75,7 +77,6 @@
             letter-spacing: -0.02em;
         }
 
-        /* Steady Landing Cover Screen — no movement except the start button */
         #welcome-cover {
             transition: opacity 0.35s ease;
         }
@@ -98,23 +99,19 @@
 </head>
 <body class="bg-zinc-50 text-zinc-900 dark:bg-[#0e0e12] dark:text-zinc-100 font-sans min-h-[100dvh] flex flex-col transition-colors duration-300 selection:bg-[#ff5656] selection:text-white touch-manipulation">
 
-    <!-- Steady Cover / Landing Page (Only the Start Button Moves, Syncs with System Light/Dark Mode) -->
+    <!-- Steady Cover / Landing Page -->
     <div id="welcome-cover" class="fixed inset-0 z-40 w-screen h-[100dvh] overflow-hidden bg-white dark:bg-[#0e0e12] flex flex-col items-center justify-center p-6 select-none">
-        <!-- Top-right quick theme toggle on cover -->
         <button id="cover-theme-btn" type="button" title="Switch Light / Dark Mode" class="absolute top-5 right-5 z-10 p-2.5 rounded-2xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/90 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 transition flex items-center gap-2 text-xs font-semibold cursor-pointer">
             <i data-lucide="sun" id="cover-icon-sun" class="w-4 h-4 text-amber-500 hidden"></i>
             <i data-lucide="moon" id="cover-icon-moon" class="w-4 h-4 text-[#ff5656]"></i>
             <span id="cover-theme-label">Dark</span>
         </button>
 
-        <!-- Steady Center Brand Lockup -->
         <div id="cover-card" class="relative z-10 flex flex-col items-center text-center max-w-md w-full">
-            <!-- Rounded Coral Camera Icon Box -->
             <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-[2rem] bg-[#ff5656] flex items-center justify-center shadow-2xl shadow-[#ff5656]/30 mb-7">
                 <i data-lucide="camera" class="w-12 h-12 sm:w-14 sm:h-14 text-white stroke-[2.2]"></i>
             </div>
 
-            <!-- "hey nonna" + Outlined "STUDIO" Pill -->
             <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10">
                 <span class="brand-logo text-4xl sm:text-5xl text-[#ff5656] lowercase tracking-tight">
                     hey nonna
@@ -126,7 +123,6 @@
                 </div>
             </div>
 
-            <!-- Moving / Interactive Start Button -->
             <button id="enter-studio-btn" type="button" class="group relative px-8 sm:px-10 py-4 sm:py-4.5 rounded-full bg-[#ff5656] hover:bg-[#e64545] hover:-translate-y-1 active:translate-y-0.5 active:scale-95 text-white font-bold text-base sm:text-lg shadow-xl shadow-[#ff5656]/35 hover:shadow-2xl hover:shadow-[#ff5656]/45 transition-all duration-200 flex items-center justify-center gap-2.5 cursor-pointer">
                 <span>Start taking photos</span>
                 <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white text-[#ff5656] transition-transform duration-300 group-hover:translate-x-1 group-hover:rotate-12 group-hover:scale-110">
@@ -187,10 +183,13 @@
     <!-- Main Workspace -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 sm:py-6 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
 
-        <!-- Left Column: Viewfinder & Live Filters -->
+        <!-- Left Column: Viewfinder, AR Effects & Live Filters -->
         <div class="lg:col-span-7 flex flex-col gap-4">
             <div class="relative w-full aspect-[4/3] bg-zinc-950 rounded-3xl overflow-hidden border-2 border-zinc-200 dark:border-zinc-800 shadow-2xl">
                 <video id="webcam-video" autoplay playsinline webkit-playsinline muted class="w-full h-full object-cover mirrored transition-all duration-200"></video>
+
+                <!-- Live AR Face Effect Overlay Canvas -->
+                <canvas id="ar-overlay-canvas" width="960" height="720" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-[5]"></canvas>
 
                 <!-- Camera Permission Placeholder -->
                 <div id="camera-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 dark:bg-zinc-900/95 p-6 text-center z-20">
@@ -199,7 +198,7 @@
                     </div>
                     <h2 class="brand-logo text-2xl sm:text-3xl text-[#ff5656] mb-2 lowercase">hey nonna studio</h2>
                     <p class="text-sm text-zinc-600 dark:text-zinc-400 max-w-md mb-6">
-                        Enable your camera to capture custom multi-shot photo strips or continuous framed booth videos.
+                        Enable your camera to capture custom multi-shot photo strips with live AR face effects and filters.
                     </p>
                     <div class="flex flex-wrap items-center justify-center gap-3">
                         <button id="start-camera-btn" class="px-6 py-3 rounded-2xl bg-[#ff5656] hover:bg-[#e64545] text-white font-bold text-sm shadow-lg shadow-[#ff5656]/30 transition transform active:scale-95 flex items-center gap-2 cursor-pointer">
@@ -222,6 +221,9 @@
                         </span>
                         <span id="active-filter-badge" class="px-3 py-1 rounded-full bg-black/65 backdrop-blur-md border border-white/10 text-xs font-medium text-zinc-200">
                             Normal
+                        </span>
+                        <span id="active-effect-badge" class="hidden items-center gap-1 px-3 py-1 rounded-full bg-[#ff5656]/90 backdrop-blur-md border border-white/15 text-xs font-bold text-white shadow">
+                            Heart Crown
                         </span>
                     </div>
 
@@ -254,6 +256,20 @@
                     <div class="border-r border-white/20"></div>
                     <div></div>
                 </div>
+            </div>
+
+            <!-- Live AR Face Effects Strip -->
+            <div class="bg-white dark:bg-[#16161d] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-4 shadow-sm transition-colors">
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <span class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+                        <i data-lucide="smile-plus" class="w-3.5 h-3.5 text-[#ff5656]"></i>
+                        Face Effects
+                    </span>
+                    <span id="face-track-status" class="text-[11px] font-semibold text-zinc-400">
+                        AR Ready
+                    </span>
+                </div>
+                <div id="effect-list" class="flex items-center gap-2.5 overflow-x-auto pb-2 custom-scrollbar"></div>
             </div>
 
             <!-- Live Filters Strip -->
@@ -338,8 +354,8 @@
                         <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                             <span class="text-xs font-semibold text-zinc-500 whitespace-nowrap">Format:</span>
                             <select id="date-format-select" class="w-full bg-transparent text-xs font-bold text-[#ff5656] focus:outline-none cursor-pointer">
-                                <option value="long" class="dark:bg-zinc-900">Nov. 25, 2026</option>
-                                <option value="short" class="dark:bg-zinc-900">11/25/2026</option>
+                                <option value="long" class="dark:bg-zinc-900">Nov. 26, 2026</option>
+                                <option value="short" class="dark:bg-zinc-900">11/26/2026</option>
                             </select>
                         </div>
                     </div>
@@ -392,7 +408,6 @@
         </div>
     </div>
 
-
     <!-- Gallery Section -->
     <section class="max-w-7xl w-full mx-auto px-4 sm:px-6 pb-12">
         <div class="bg-white dark:bg-[#16161d] border border-zinc-200 dark:border-zinc-800 rounded-3xl p-5 sm:p-6 shadow-sm transition-colors">
@@ -417,7 +432,7 @@
         </div>
     </section>
 
-    <!-- Shot Selection & Customization Modal (Shared for Photo & Video) -->
+    <!-- Shot Selection & Customization Modal -->
     <div id="selection-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2.5 sm:p-5">
         <div class="bg-white dark:bg-[#16161d] border border-zinc-200 dark:border-zinc-800 rounded-3xl max-w-6xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[94dvh] animate-pop-in">
             <div class="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3">
@@ -439,7 +454,7 @@
 
             <div class="p-4 sm:p-6 overflow-y-auto custom-scrollbar grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 flex-1">
                 <div class="lg:col-span-6 flex flex-col gap-4">
-                    <!-- Step 1: Pick Shots (Hidden in Video Mode) -->
+                    <!-- Step 1: Pick Shots -->
                     <div id="step-1-container" class="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5">
                         <div class="flex items-center justify-between mb-2.5">
                             <span class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
@@ -463,7 +478,7 @@
                         <div id="strip-theme-list" class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-44 overflow-y-auto custom-scrollbar p-1"></div>
                     </div>
 
-                    <!-- Post-Capture Filter (Visible Scrollbar) -->
+                    <!-- Post-Capture Filter -->
                     <div class="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5">
                         <div class="flex items-center justify-between mb-2.5">
                             <span class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
@@ -474,7 +489,7 @@
                         <div id="post-filter-list" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar"></div>
                     </div>
 
-                    <!-- Crayon Doodles Palette (Visible Scrollbar) -->
+                    <!-- Crayon Doodles Palette -->
                     <div class="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5">
                         <div class="flex items-center justify-between mb-2.5">
                             <span class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
@@ -527,7 +542,7 @@
         </div>
     </div>
 
-    <!-- Gallery Lightbox Modal (Full Uncropped Frame + Process Replay Preview) -->
+    <!-- Gallery Lightbox Modal -->
     <div id="preview-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
         <div class="bg-white dark:bg-[#16161d] border border-zinc-200 dark:border-zinc-800 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[94dvh] animate-pop-in">
             <div class="px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
@@ -583,6 +598,16 @@
             8: { totalShots: 15, pickCount: 8 },
         };
 
+        const FACE_EFFECTS = [
+            { id: 'none', name: 'None', badge: 'OFF' },
+            { id: 'heart-crown', name: 'Heart Crown', badge: 'Mac' },
+            { id: 'flower-crown', name: 'Flower Crown', badge: 'Boho' },
+            { id: 'cat', name: 'Kitty Cat', badge: 'Cute' },
+            { id: 'devil', name: 'Devil Horns', badge: 'Imp' },
+            { id: 'cool-halo', name: 'Angel', badge: 'Vibe' },
+            { id: 'bunny', name: 'Bunny Ears', badge: 'Bun' }
+        ];
+
         const FILTERS = [
             { id: 'normal', name: 'Normal', css: 'none', swatch: 'bg-gradient-to-tr from-zinc-500 to-zinc-300' },
             { id: 'grayscale', name: 'B&W', css: 'grayscale(100%) contrast(110%)', swatch: 'bg-gradient-to-tr from-zinc-950 to-zinc-300' },
@@ -594,7 +619,6 @@
             { id: 'contrast', name: 'Pop', css: 'contrast(150%) saturate(125%)', swatch: 'bg-gradient-to-tr from-zinc-900 via-[#ff5656] to-white' },
         ];
 
-        // 14 Frame Designs
         const FRAME_THEMES = [
             { id: 'coral', name: 'hey nonna Originals', bg: '#ff5656', text: '#ffffff', subtext: '#ffe4e4', border: '#e04343', pattern: 'none' },
             { id: 'white', name: 'Studio White', bg: '#ffffff', text: '#18181b', subtext: '#71717a', border: '#e4e4e7', pattern: 'none' },
@@ -614,6 +638,7 @@
 
         const DOODLE_TYPES = [
             { id: 'bow', label: 'Pink Bow' },
+            { id: 'lollipop', label: 'Candy' },
             { id: 'flowers', label: 'Flowers' },
             { id: 'hearts', label: 'Hearts' },
             { id: 'sparkles', label: 'Sparkles' },
@@ -632,6 +657,7 @@
             videoDevices: [],
             currentDeviceIndex: 0,
             isMirrored: true,
+            activeEffect: FACE_EFFECTS[0],
             activeFilter: FILTERS[0],
             postFilter: FILTERS[0],
             boothMode: 'photo',
@@ -657,6 +683,12 @@
             isRenderingVideoExport: false,
             gallery: [],
             activeModalItemId: null,
+            // Face tracking state
+            faceMesh: null,
+            faceMeshReady: false,
+            latestFaceLandmarks: null,
+            smoothFacePose: null,
+            arLoopId: null,
         };
 
         // DOM Elements
@@ -664,11 +696,10 @@
         const enterStudioBtn = document.getElementById('enter-studio-btn');
         const homeLogoBtn = document.getElementById('home-logo-btn');
         const coverThemeBtn = document.getElementById('cover-theme-btn');
-        const coverIconSun = document.getElementById('cover-icon-sun');
-        const coverIconMoon = document.getElementById('cover-icon-moon');
         const coverThemeLabel = document.getElementById('cover-theme-label');
 
         const videoEl = document.getElementById('webcam-video');
+        const arOverlayCanvas = document.getElementById('ar-overlay-canvas');
         const rawRecordedVideoEl = document.getElementById('raw-recorded-video');
         const cameraPlaceholder = document.getElementById('camera-placeholder');
         const startCameraBtn = document.getElementById('start-camera-btn');
@@ -677,13 +708,14 @@
         const recBadge = document.getElementById('rec-badge');
         const recTimerText = document.getElementById('rec-timer-text');
         const activeFilterBadge = document.getElementById('active-filter-badge');
+        const activeEffectBadge = document.getElementById('active-effect-badge');
+        const faceTrackStatus = document.getElementById('face-track-status');
         const mirrorBtn = document.getElementById('mirror-btn');
         const gridToggleBtn = document.getElementById('grid-toggle-btn');
         const gridOverlay = document.getElementById('grid-overlay');
+        const effectListEl = document.getElementById('effect-list');
         const filterListEl = document.getElementById('filter-list');
         const postFilterListEl = document.getElementById('post-filter-list');
-        const photoCountSection = document.getElementById('photo-count-section');
-        const videoDurationSection = document.getElementById('video-duration-section');
         const shotRuleBadge = document.getElementById('shot-rule-badge');
         const stripThemeListEl = document.getElementById('strip-theme-list');
         const selectedThemeNameEl = document.getElementById('selected-theme-name');
@@ -736,11 +768,8 @@
         const modalDeleteBtn = document.getElementById('modal-delete-btn');
 
         const themeToggleBtn = document.getElementById('theme-toggle-btn');
-        const themeIconSun = document.getElementById('theme-icon-sun');
-        const themeIconMoon = document.getElementById('theme-icon-moon');
         const themeLabel = document.getElementById('theme-label');
         const soundToggleBtn = document.getElementById('sound-toggle-btn');
-        const soundIcon = document.getElementById('sound-icon');
         const soundLabel = document.getElementById('sound-label');
 
         function applyTheme(isDark) {
@@ -752,7 +781,6 @@
             const cSun = document.getElementById('cover-icon-sun');
             const cMoon = document.getElementById('cover-icon-moon');
 
-            // Sun for Light mode, Moon for Dark mode
             if (tSun) tSun.classList.toggle('hidden', isDark);
             if (tMoon) tMoon.classList.toggle('hidden', !isDark);
             themeLabel.textContent = isDark ? 'Dark' : 'Light';
@@ -846,6 +874,457 @@
             }, 3000);
         }
 
+        // ============================================================
+        // REAL-TIME AR FACE EFFECTS ENGINE (MediaPipe FaceMesh + 2D)
+        // ============================================================
+        async function initFaceMesh() {
+            if (state.faceMesh || typeof FaceMesh === 'undefined') return;
+            try {
+                const faceMesh = new FaceMesh({
+                    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+                });
+                faceMesh.setOptions({
+                    maxNumFaces: 2,
+                    refineLandmarks: false,
+                    minDetectionConfidence: 0.55,
+                    minTrackingConfidence: 0.55
+                });
+                faceMesh.onResults((results) => {
+                    state.latestFaceLandmarks = results.multiFaceLandmarks || [];
+                });
+                state.faceMesh = faceMesh;
+                state.faceMeshReady = true;
+            } catch (e) {
+                console.warn('FaceMesh failed to load, falling back to centered AR.', e);
+            }
+        }
+
+        function getEffectIconSvg(id) {
+            switch (id) {
+                case 'heart-crown':
+                    return `<svg class="w-6 h-6" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 13C17.5 9.5 13 10.5 13 14C13 17.5 20 22 20 22C20 22 27 17.5 27 14C27 10.5 22.5 9.5 20 13Z" fill="#ff4d6d"/>
+                        <path d="M9 19C7.5 17 5 17.5 5 19.5C5 21.5 9 24 9 24C9 24 13 21.5 13 19.5C13 17.5 10.5 17 9 19Z" fill="#ff8fa3"/>
+                        <path d="M31 19C29.5 17 27 17.5 27 19.5C27 21.5 31 24 31 24C31 24 35 21.5 35 19.5C35 17.5 32.5 17 31 19Z" fill="#ff8fa3"/>
+                    </svg>`;
+                case 'flower-crown':
+                    return `<svg class="w-6 h-6" viewBox="0 0 40 40" fill="none">
+                        <circle cx="11" cy="21" r="5" fill="#ffafcc"/><circle cx="11" cy="21" r="2" fill="#ffd166"/>
+                        <circle cx="20" cy="17" r="6" fill="#bde0fe"/><circle cx="20" cy="17" r="2.4" fill="#ffd166"/>
+                        <circle cx="29" cy="21" r="5" fill="#cdb4db"/><circle cx="29" cy="21" r="2" fill="#ffd166"/>
+                    </svg>`;
+                case 'cat':
+                    return `<svg class="w-6 h-6" viewBox="0 0 40 40" fill="none">
+                        <path d="M8 20L11 8L19 16Z" fill="#ffb3c1" stroke="#ff5656" stroke-width="1.8"/>
+                        <path d="M32 20L29 8L21 16Z" fill="#ffb3c1" stroke="#ff5656" stroke-width="1.8"/>
+                        <path d="M7 25H14M26 25H33M7 28H14M26 28H33" stroke="#ff5656" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>`;
+                case 'devil':
+                    return `<svg class="w-6 h-6" viewBox="0 0 40 40" fill="none">
+                        <path d="M14 26C10 21 9 14 13 9C13 15 16 18 18 22Z" fill="#e63946"/>
+                        <path d="M26 26C30 21 31 14 27 9C27 15 24 18 22 22Z" fill="#e63946"/>
+                    </svg>`;
+                case 'cool-halo':
+                    return `<svg class="w-6 h-6" viewBox="0 0 40 40" fill="none">
+                        <ellipse cx="20" cy="11" rx="9" ry="3" stroke="#ffd166" stroke-width="2.5"/>
+                        <rect x="8" y="19" width="10" height="7" rx="2" fill="#18181b"/>
+                        <rect x="22" y="19" width="10" height="7" rx="2" fill="#18181b"/>
+                        <path d="M18 21H22" stroke="#18181b" stroke-width="2"/>
+                    </svg>`;
+                case 'bunny':
+                    return `<svg class="w-6 h-6" viewBox="0 0 40 40" fill="none">
+                        <ellipse cx="14" cy="16" rx="4" ry="11" transform="rotate(-8 14 16)" fill="#ffffff" stroke="#d4d4d8" stroke-width="1.5"/>
+                        <ellipse cx="14" cy="16" rx="2" ry="7" transform="rotate(-8 14 16)" fill="#ffafcc"/>
+                        <ellipse cx="26" cy="16" rx="4" ry="11" transform="rotate(8 26 16)" fill="#ffffff" stroke="#d4d4d8" stroke-width="1.5"/>
+                        <ellipse cx="26" cy="16" rx="2" ry="7" transform="rotate(8 26 16)" fill="#ffafcc"/>
+                    </svg>`;
+                default:
+                    return `<svg class="w-5 h-5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/>
+                    </svg>`;
+            }
+        }
+
+        function renderEffectButtons() {
+            effectListEl.innerHTML = '';
+            FACE_EFFECTS.forEach(effect => {
+                const isActive = state.activeEffect.id === effect.id;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `flex-shrink-0 flex flex-col items-center gap-1.5 p-2 rounded-2xl border transition min-w-[78px] cursor-pointer ${
+                    isActive
+                        ? 'bg-[#ff5656]/15 border-[#ff5656] text-zinc-900 dark:text-white shadow-sm'
+                        : 'bg-zinc-100/80 dark:bg-zinc-900/80 border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600'
+                }`;
+                btn.innerHTML = `
+                    <div class="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 flex items-center justify-center shadow-inner border border-black/5 dark:border-white/10">
+                        ${getEffectIconSvg(effect.id)}
+                    </div>
+                    <span class="text-[11px] font-semibold tracking-tight whitespace-nowrap">${effect.name}</span>
+                `;
+                btn.addEventListener('click', () => {
+                    state.activeEffect = effect;
+                    if (effect.id === 'none') {
+                        activeEffectBadge.classList.add('hidden');
+                        activeEffectBadge.classList.remove('flex');
+                    } else {
+                        activeEffectBadge.textContent = effect.name;
+                        activeEffectBadge.classList.remove('hidden');
+                        activeEffectBadge.classList.add('flex');
+                        if (!state.faceMesh) initFaceMesh();
+                    }
+                    renderEffectButtons();
+                });
+                effectListEl.appendChild(btn);
+            });
+        }
+
+        function computeFaceGeometry(landmarks, canvasW, canvasH, isMirrored) {
+            const vw = videoEl.videoWidth || 1280;
+            const vh = videoEl.videoHeight || 960;
+            const targetAspect = canvasW / canvasH;
+            const currentAspect = vw / vh;
+
+            let cropX = 0, cropY = 0, cropW = 1, cropH = 1;
+            if (currentAspect > targetAspect) {
+                cropW = targetAspect / currentAspect;
+                cropX = (1 - cropW) / 2;
+            } else if (currentAspect < targetAspect) {
+                cropH = currentAspect / targetAspect;
+                cropY = (1 - cropH) / 2;
+            }
+
+            const mapPt = (idx) => {
+                const lm = landmarks[idx];
+                let nx = (lm.x - cropX) / cropW;
+                let ny = (lm.y - cropY) / cropH;
+                if (isMirrored) nx = 1 - nx;
+                return { x: nx * canvasW, y: ny * canvasH };
+            };
+
+            const forehead = mapPt(10);
+            const chin = mapPt(152);
+            const leftTemple = mapPt(234);
+            const rightTemple = mapPt(454);
+            const noseTip = mapPt(4);
+            const upperLip = mapPt(13);
+            const lowerLip = mapPt(14);
+            const leftEye = mapPt(33);
+            const rightEye = mapPt(263);
+
+            const leftCheek = isMirrored ? rightTemple : leftTemple;
+            const rightCheek = isMirrored ? leftTemple : rightTemple;
+
+            const faceW = Math.hypot(rightCheek.x - leftCheek.x, rightCheek.y - leftCheek.y);
+            const faceH = Math.hypot(chin.x - forehead.x, chin.y - forehead.y);
+            const angle = Math.atan2(rightCheek.y - leftCheek.y, rightCheek.x - leftCheek.x);
+            const mouthOpen = Math.hypot(lowerLip.x - upperLip.x, lowerLip.y - upperLip.y) / Math.max(1, faceH);
+
+            return {
+                forehead,
+                chin,
+                leftCheek,
+                rightCheek,
+                noseTip,
+                upperLip,
+                lowerLip,
+                leftEye,
+                rightEye,
+                faceW,
+                faceH,
+                angle,
+                mouthOpen
+            };
+        }
+
+        function drawMiniHeart(ctx, x, y, size, color, stroke = null) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.beginPath();
+            ctx.moveTo(0, size * 0.72);
+            ctx.bezierCurveTo(-size * 1.35, -size * 0.15, -size * 0.65, -size * 1.15, 0, -size * 0.35);
+            ctx.bezierCurveTo(size * 0.65, -size * 1.15, size * 1.35, -size * 0.15, 0, size * 0.72);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            if (stroke) {
+                ctx.strokeStyle = stroke;
+                ctx.lineWidth = Math.max(1.5, size * 0.12);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function drawFlowerHead(ctx, x, y, radius, petalColor, centerColor = '#ffd166') {
+            ctx.save();
+            ctx.translate(x, y);
+            for (let i = 0; i < 6; i++) {
+                const a = (i * Math.PI) / 3;
+                ctx.fillStyle = petalColor;
+                ctx.beginPath();
+                ctx.arc(Math.cos(a) * radius * 0.68, Math.sin(a) * radius * 0.68, radius * 0.48, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.fillStyle = centerColor;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius * 0.42, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function renderAREffectOnContext(ctx, canvasW, canvasH, isMirrored, timeMs) {
+            const effectId = state.activeEffect.id;
+            if (effectId === 'none') return;
+
+            const faces = state.latestFaceLandmarks;
+            const faceList = (faces && faces.length > 0)
+                ? faces.map(lm => computeFaceGeometry(lm, canvasW, canvasH, isMirrored))
+                : [{
+                    // Fallback centered pose if face is briefly outside frame
+                    forehead: { x: canvasW * 0.5, y: canvasH * 0.28 },
+                    chin: { x: canvasW * 0.5, y: canvasH * 0.72 },
+                    leftCheek: { x: canvasW * 0.34, y: canvasH * 0.48 },
+                    rightCheek: { x: canvasW * 0.66, y: canvasH * 0.48 },
+                    noseTip: { x: canvasW * 0.5, y: canvasH * 0.53 },
+                    upperLip: { x: canvasW * 0.5, y: canvasH * 0.61 },
+                    lowerLip: { x: canvasW * 0.5, y: canvasH * 0.63 },
+                    leftEye: { x: canvasW * 0.42, y: canvasH * 0.43 },
+                    rightEye: { x: canvasW * 0.58, y: canvasH * 0.43 },
+                    faceW: canvasW * 0.32,
+                    faceH: canvasH * 0.44,
+                    angle: 0,
+                    mouthOpen: 0.04
+                }];
+
+            const t = timeMs * 0.003;
+
+            faceList.forEach((f) => {
+                const s = f.faceW;
+
+                // 1. MACBOOK PHOTOBOOTH HEART CROWN
+                if (effectId === 'heart-crown') {
+                    ctx.save();
+                    ctx.translate(f.forehead.x, f.forehead.y);
+                    ctx.rotate(f.angle);
+
+                    const crownRx = s * 0.62;
+                    const crownRy = s * 0.16;
+                    const crownY = -s * 0.24;
+                    const numHearts = 7;
+
+                    // Soft glow behind hearts
+                    ctx.shadowColor = 'rgba(255, 77, 109, 0.55)';
+                    ctx.shadowBlur = 14;
+
+                    for (let i = 0; i < numHearts; i++) {
+                        const phase = (i / numHearts) * Math.PI * 2 + t * 0.85;
+                        const hx = Math.cos(phase) * crownRx;
+                        const hy = crownY + Math.sin(phase) * crownRy + Math.sin(t * 2 + i) * (s * 0.025);
+                        const depthScale = 0.75 + 0.35 * ((Math.sin(phase) + 1) / 2);
+                        const heartSize = s * 0.125 * depthScale;
+                        const col = i % 2 === 0 ? '#ff3b6b' : '#ff85a1';
+                        drawMiniHeart(ctx, hx, hy, heartSize, col, '#ffffff');
+                    }
+                    ctx.restore();
+                }
+
+                // 2. FLOWER CROWN
+                else if (effectId === 'flower-crown') {
+                    ctx.save();
+                    ctx.translate(f.forehead.x, f.forehead.y);
+                    ctx.rotate(f.angle);
+
+                    // Green leafy vine arc
+                    ctx.strokeStyle = '#52b788';
+                    ctx.lineWidth = Math.max(4, s * 0.032);
+                    ctx.beginPath();
+                    ctx.ellipse(0, -s * 0.05, s * 0.54, s * 0.14, 0, Math.PI, Math.PI * 2);
+                    ctx.stroke();
+
+                    const flowers = [
+                        { x: -s * 0.48, y: -s * 0.04, r: s * 0.10, c: '#cdb4db' },
+                        { x: -s * 0.30, y: -s * 0.13, r: s * 0.12, c: '#ffafcc' },
+                        { x: -s * 0.10, y: -s * 0.17, r: s * 0.135, c: '#ffffff' },
+                        { x: s * 0.10, y: -s * 0.17, r: s * 0.135, c: '#bde0fe' },
+                        { x: s * 0.30, y: -s * 0.13, r: s * 0.12, c: '#ffc8dd' },
+                        { x: s * 0.48, y: -s * 0.04, r: s * 0.10, c: '#ffd6a5' },
+                    ];
+                    flowers.forEach(fl => drawFlowerHead(ctx, fl.x, fl.y, fl.r, fl.c));
+                    ctx.restore();
+                }
+
+
+                // 4. KITTY CAT EARS & WHISKERS
+                else if (effectId === 'cat') {
+                    ctx.save();
+                    ctx.translate(f.forehead.x, f.forehead.y);
+                    ctx.rotate(f.angle);
+
+                    [-1, 1].forEach(side => {
+                        ctx.save();
+                        ctx.translate(side * s * 0.34, -s * 0.08);
+                        ctx.rotate(side * 0.25);
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.strokeStyle = '#ff758f';
+                        ctx.lineWidth = Math.max(3, s * 0.022);
+                        ctx.beginPath();
+                        ctx.moveTo(-s * 0.14, s * 0.05);
+                        ctx.lineTo(0, -s * 0.26);
+                        ctx.lineTo(s * 0.14, s * 0.05);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#ffb3c1';
+                        ctx.beginPath();
+                        ctx.moveTo(-s * 0.08, s * 0.02);
+                        ctx.lineTo(0, -s * 0.17);
+                        ctx.lineTo(s * 0.08, s * 0.02);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                    ctx.restore();
+
+                    // Pink triangle nose + whiskers
+                    ctx.save();
+                    ctx.translate(f.noseTip.x, f.noseTip.y);
+                    ctx.rotate(f.angle);
+
+                    ctx.fillStyle = '#ff758f';
+                    ctx.beginPath();
+                    ctx.moveTo(-s * 0.06, -s * 0.02);
+                    ctx.lineTo(s * 0.06, -s * 0.02);
+                    ctx.lineTo(0, s * 0.045);
+                    ctx.closePath();
+                    ctx.fill();
+
+                    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+                    ctx.lineWidth = Math.max(2.5, s * 0.015);
+                    ctx.lineCap = 'round';
+                    [-1, 1].forEach(side => {
+                        ctx.beginPath();
+                        ctx.moveTo(side * s * 0.16, -s * 0.01);
+                        ctx.lineTo(side * s * 0.42, -s * 0.06);
+                        ctx.moveTo(side * s * 0.17, s * 0.03);
+                        ctx.lineTo(side * s * 0.44, s * 0.03);
+                        ctx.moveTo(side * s * 0.16, s * 0.07);
+                        ctx.lineTo(side * s * 0.41, s * 0.12);
+                        ctx.stroke();
+                    });
+                    ctx.restore();
+                }
+
+                // 5. DEVIL HORNS
+                else if (effectId === 'devil') {
+                    ctx.save();
+                    ctx.translate(f.forehead.x, f.forehead.y);
+                    ctx.rotate(f.angle);
+
+                    [-1, 1].forEach(side => {
+                        ctx.save();
+                        ctx.translate(side * s * 0.28, -s * 0.08);
+                        ctx.fillStyle = '#d90429';
+                        ctx.strokeStyle = '#8d0801';
+                        ctx.lineWidth = Math.max(2.5, s * 0.018);
+                        ctx.beginPath();
+                        ctx.moveTo(-side * s * 0.08, s * 0.04);
+                        ctx.quadraticCurveTo(side * s * 0.16, -s * 0.10, side * s * 0.12, -s * 0.34);
+                        ctx.quadraticCurveTo(-side * s * 0.02, -s * 0.18, side * s * 0.08, s * 0.04);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        ctx.restore();
+                    });
+                    ctx.restore();
+                }
+
+                // 6. ANGEL HALO & COOL SHADES
+                else if (effectId === 'cool-halo') {
+                    // Glowing Halo above forehead
+                    ctx.save();
+                    ctx.translate(f.forehead.x, f.forehead.y);
+                    ctx.rotate(f.angle);
+                    ctx.shadowColor = '#ffd166';
+                    ctx.shadowBlur = 18;
+                    ctx.strokeStyle = '#ffe066';
+                    ctx.lineWidth = Math.max(5, s * 0.035);
+                    ctx.beginPath();
+                    ctx.ellipse(0, -s * 0.28 + Math.sin(t * 2) * 4, s * 0.34, s * 0.09, 0, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.restore();
+
+                    
+                }
+
+                // 7. BUNNY EARS & NOSE
+                else if (effectId === 'bunny') {
+                    ctx.save();
+                    ctx.translate(f.forehead.x, f.forehead.y);
+                    ctx.rotate(f.angle);
+
+                    [-1, 1].forEach(side => {
+                        ctx.save();
+                        ctx.translate(side * s * 0.22, -s * 0.05);
+                        ctx.rotate(side * 0.14 + Math.sin(t * 2.5 + side) * 0.04);
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.strokeStyle = '#e4e4e7';
+                        ctx.lineWidth = Math.max(3, s * 0.02);
+                        ctx.beginPath();
+                        ctx.ellipse(0, -s * 0.34, s * 0.11, s * 0.36, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#ffafcc';
+                        ctx.beginPath();
+                        ctx.ellipse(0, -s * 0.32, s * 0.055, s * 0.24, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                    ctx.restore();
+
+                    // Pink bunny nose
+                    ctx.save();
+                    ctx.translate(f.noseTip.x, f.noseTip.y);
+                    ctx.rotate(f.angle);
+                    ctx.fillStyle = '#ff8fa3';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, s * 0.075, s * 0.052, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            });
+        }
+
+        function startARRenderLoop() {
+            if (state.arLoopId) cancelAnimationFrame(state.arLoopId);
+            const arCtx = arOverlayCanvas.getContext('2d');
+            let lastDetectTime = 0;
+
+            async function tick(now) {
+                arCtx.clearRect(0, 0, arOverlayCanvas.width, arOverlayCanvas.height);
+
+                if (state.activeEffect.id !== 'none' && videoEl.readyState >= 2) {
+                    if (state.faceMeshReady && state.faceMesh && now - lastDetectTime > 45) {
+                        lastDetectTime = now;
+                        try {
+                            await state.faceMesh.send({ image: videoEl });
+                        } catch (_) {}
+                    }
+                    const hasFace = state.latestFaceLandmarks && state.latestFaceLandmarks.length > 0;
+                    faceTrackStatus.textContent = hasFace ? 'Face Tracked ✨' : 'Centering Effect...';
+                    renderAREffectOnContext(arCtx, arOverlayCanvas.width, arOverlayCanvas.height, state.isMirrored, now);
+                } else {
+                    faceTrackStatus.textContent = state.activeEffect.id === 'none' ? 'AR Ready' : 'Loading AR...';
+                }
+
+                state.arLoopId = requestAnimationFrame(tick);
+            }
+            state.arLoopId = requestAnimationFrame(tick);
+        }
+
         async function startWebcam(deviceId = null) {
             try {
                 if (state.stream) state.stream.getTracks().forEach(t => t.stop());
@@ -865,6 +1344,9 @@
                 cameraPlaceholder.classList.add('hidden');
                 liveBadge.classList.remove('hidden');
                 liveBadge.classList.add('flex');
+
+                initFaceMesh();
+                startARRenderLoop();
 
                 const devices = await navigator.mediaDevices.enumerateDevices();
                 state.videoDevices = devices.filter(d => d.kind === 'videoinput');
@@ -986,25 +1468,6 @@
             if (mobHint) mobHint.textContent = hint;
         }
 
-        document.querySelectorAll('.booth-mode-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (state.isBusy) return;
-                state.boothMode = btn.dataset.boothMode;
-                document.querySelectorAll('.booth-mode-btn').forEach(b => {
-                    const active = b.dataset.boothMode === state.boothMode;
-                    b.className = `booth-mode-btn py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition cursor-pointer ${active ? 'bg-[#ff5656] text-white shadow-md shadow-[#ff5656]/25' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'}`;
-                });
-                if (state.boothMode === 'photo') {
-                    photoCountSection.classList.remove('hidden');
-                    videoDurationSection.classList.add('hidden');
-                } else {
-                    photoCountSection.classList.add('hidden');
-                    videoDurationSection.classList.remove('hidden');
-                }
-                updatePrimaryActionUI();
-            });
-        });
-
         document.querySelectorAll('.count-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (state.isBusy) return;
@@ -1012,18 +1475,6 @@
                 document.querySelectorAll('.count-btn').forEach(b => {
                     const active = parseInt(b.dataset.count, 10) === state.photoCount;
                     b.className = `count-btn py-2 rounded-xl text-sm font-bold transition cursor-pointer ${active ? 'bg-[#ff5656] text-white shadow-sm' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'}`;
-                });
-                updatePrimaryActionUI();
-            });
-        });
-
-        document.querySelectorAll('.duration-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (state.isBusy) return;
-                state.videoDuration = parseInt(btn.dataset.duration, 10);
-                document.querySelectorAll('.duration-btn').forEach(b => {
-                    const active = parseInt(b.dataset.duration, 10) === state.videoDuration;
-                    b.className = `duration-btn py-2 rounded-xl text-xs font-bold transition cursor-pointer ${active ? 'bg-[#ff5656] text-white shadow-sm' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'}`;
                 });
                 updatePrimaryActionUI();
             });
@@ -1168,6 +1619,11 @@
             ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
             ctx.restore();
 
+            // Burn active live AR Face Effect directly into the captured photo
+            if (state.activeEffect.id !== 'none') {
+                renderAREffectOnContext(ctx, canvas.width, canvas.height, state.isMirrored, performance.now());
+            }
+
             return canvas;
         }
 
@@ -1247,141 +1703,6 @@
             resetPreviewZoom();
             selectionModal.classList.remove('hidden');
             lucide.createIcons();
-        }
-
-        function openVideoCustomizationModal() {
-            state.postFilter = FILTERS[0];
-            state.placedDoodles = [];
-
-            step1Container.classList.add('hidden');
-            stepNumFrame.textContent = '1';
-            stepNumFilter.textContent = '2';
-            stepNumDoodle.textContent = '3';
-            clearPicksBtn.textContent = 'Clear Doodles';
-            modalPrintBtn.classList.add('hidden');
-            liveFramePreviewImg.classList.add('hidden');
-            liveVideoPreviewCanvas.classList.remove('hidden');
-
-            selectionProgressPill.textContent = `Video • ${state.rawVideoDurationSec}s`;
-            selectionInstruction.textContent = 'Choose your frame design, post-capture filter, and add crayon doodles (Drag to move • Click to delete)!';
-            confirmFrameBtn.disabled = false;
-            confirmFrameText.textContent = 'Save Video';
-
-            renderFrameThemes();
-            renderPostFilterButtons();
-            renderDoodleToolbar();
-            renderDoodlesOnStage();
-
-            resetPreviewZoom();
-            selectionModal.classList.remove('hidden');
-            lucide.createIcons();
-
-            const ctx = liveVideoPreviewCanvas.getContext('2d');
-            drawComposedVideoFrame(ctx, liveVideoPreviewCanvas, false);
-
-            rawRecordedVideoEl.loop = true;
-            rawRecordedVideoEl.muted = true;
-            rawRecordedVideoEl.src = state.rawVideoUrl;
-            rawRecordedVideoEl.load();
-
-            const startPlayback = () => {
-                rawRecordedVideoEl.play().catch(() => {});
-                startVideoPreviewLoop();
-            };
-
-            if (rawRecordedVideoEl.readyState >= 2) {
-                startPlayback();
-            } else {
-                rawRecordedVideoEl.onloadeddata = startPlayback;
-            }
-        }
-
-        function stopVideoPreviewLoop() {
-            if (state.videoPreviewAnimId) {
-                cancelAnimationFrame(state.videoPreviewAnimId);
-                state.videoPreviewAnimId = null;
-            }
-            rawRecordedVideoEl.pause();
-        }
-
-        function renderSingleVideoPreviewFrame() {
-            if (selectionModal.classList.contains('hidden') || state.boothMode !== 'video') return;
-            const ctx = liveVideoPreviewCanvas.getContext('2d');
-            drawComposedVideoFrame(ctx, liveVideoPreviewCanvas, false);
-        }
-
-        function drawComposedVideoFrame(ctx, targetCanvas, includeDoodles = false, previewDisplayWidth = 0) {
-            const theme = state.frameTheme;
-            const isPortrait = state.orientation === 'portrait';
-            const showDate = dateStampToggle.checked;
-
-            const videoW = isPortrait ? 450 : 600;
-            const videoH = isPortrait ? 600 : 450;
-            const pad = 28;
-            const footerH = 92;
-
-            const totalW = videoW + pad * 2;
-            const totalH = videoH + pad + footerH;
-
-            if (targetCanvas.width !== totalW || targetCanvas.height !== totalH) {
-                targetCanvas.width = totalW;
-                targetCanvas.height = totalH;
-            }
-
-            drawFrameBackground(ctx, totalW, totalH, theme);
-
-            if (rawRecordedVideoEl.readyState >= 2 && rawRecordedVideoEl.videoWidth > 0) {
-                const vw = rawRecordedVideoEl.videoWidth;
-                const vh = rawRecordedVideoEl.videoHeight;
-                const targetAspect = videoW / videoH;
-                const currentAspect = vw / vh;
-                let sx = 0, sy = 0, sw = vw, sh = vh;
-
-                if (currentAspect > targetAspect) {
-                    sw = vh * targetAspect;
-                    sx = (vw - sw) / 2;
-                } else if (currentAspect < targetAspect) {
-                    sh = vw / targetAspect;
-                    sy = (vh - sh) / 2;
-                }
-
-                ctx.save();
-                ctx.filter = state.postFilter.css;
-                ctx.drawImage(rawRecordedVideoEl, sx, sy, sw, sh, pad, pad, videoW, videoH);
-                ctx.restore();
-            } else {
-                ctx.fillStyle = '#18181b';
-                ctx.fillRect(pad, pad, videoW, videoH);
-            }
-
-            ctx.strokeStyle = theme.border;
-            ctx.lineWidth = 4;
-            ctx.strokeRect(pad, pad, videoW, videoH);
-            drawFrameFooter(ctx, totalW, totalH, footerH, theme, showDate);
-
-            if (includeDoodles && previewDisplayWidth > 0 && state.placedDoodles.length > 0) {
-                const scale = totalW / previewDisplayWidth;
-                state.placedDoodles.forEach(doodle => {
-                    const sxPos = doodle.x * scale;
-                    const syPos = doodle.y * scale;
-                    const sSize = doodle.size * scale;
-                    ctx.save();
-                    ctx.translate(sxPos, syPos);
-                    drawCanvasDoodle(ctx, doodle.type, sSize);
-                    ctx.restore();
-                });
-            }
-        }
-
-        function startVideoPreviewLoop() {
-            stopVideoPreviewLoop();
-            const ctx = liveVideoPreviewCanvas.getContext('2d');
-            function loop() {
-                if (selectionModal.classList.contains('hidden') || state.boothMode !== 'video') return;
-                drawComposedVideoFrame(ctx, liveVideoPreviewCanvas, false);
-                state.videoPreviewAnimId = requestAnimationFrame(loop);
-            }
-            loop();
         }
 
         function renderShotPickerGrid() {
@@ -1558,8 +1879,7 @@
             });
         }
 
-
-        // Live Frame Preview Zoom & Pan Controller (+ / - buttons, mouse wheel / trackpad pinch, touch pinch & drag)
+        // Live Frame Preview Zoom & Pan Controller
         const previewZoomState = {
             scale: 1,
             panX: 0,
@@ -1604,7 +1924,6 @@
 
             if (!viewport) return;
 
-            // Mouse wheel & Trackpad pinch-to-zoom (ctrlKey is set automatically by browsers for trackpad pinch gestures)
             viewport.addEventListener('wheel', (e) => {
                 e.preventDefault();
                 const intensity = e.ctrlKey ? 0.012 : 0.002;
@@ -1612,7 +1931,6 @@
                 setPreviewZoom(previewZoomState.scale + delta);
             }, { passive: false });
 
-            // Pan when zoomed in (mouse/single touch on background)
             let isPanning = false;
             let panStartX = 0, panStartY = 0;
             let origPanX = 0, origPanY = 0;
@@ -1641,7 +1959,6 @@
                 try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
             });
 
-            // Two-finger Touch Pinch-to-Zoom on mobile & iPad
             let initialPinchDist = null;
             let initialPinchScale = 1;
 
@@ -1681,6 +1998,14 @@
                         <path d="M42 28C54 12 72 14 70 28C68 40 52 36 42 28Z" stroke="#f4a2b8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#f9c6d3" fill-opacity="0.45"/>
                         <path d="M36 32L24 54M44 32L56 54" stroke="#f4a2b8" stroke-width="5" stroke-linecap="round"/>
                         <circle cx="40" cy="28" r="5" fill="#f4a2b8"/>
+                    </svg>`;
+                case 'lollipop':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 46V70" stroke="#e2d9c8" stroke-width="5.5" stroke-linecap="round"/>
+                        <path d="M40 46V70" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="40" cy="30" r="19" fill="#fff0f5" stroke="#ff5d8f" stroke-width="3.5"/>
+                        <path d="M40 30C42 30 43.5 28 42.5 26C41 23 36.5 23 35 26C32.5 30 35 35.5 39.5 36.5C45.5 38 50.5 33 50.5 27C50.5 19 43.5 14 36 16" stroke="#ff5d8f" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="33" cy="21" r="2.2" fill="#ffffff" fill-opacity="0.85"/>
                     </svg>`;
                 case 'flowers':
                     return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1788,6 +2113,49 @@
                 ctx.fillStyle = '#f4a2b8';
                 ctx.beginPath();
                 ctx.arc(40, 28, 5, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (type === 'lollipop') {
+                // Stick
+                ctx.strokeStyle = '#e2d9c8';
+                ctx.lineWidth = 5.5;
+                ctx.beginPath();
+                ctx.moveTo(40, 46);
+                ctx.lineTo(40, 70);
+                ctx.stroke();
+
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(40, 46);
+                ctx.lineTo(40, 70);
+                ctx.stroke();
+
+                // Candy base circle
+                ctx.fillStyle = '#fff0f5';
+                ctx.strokeStyle = '#ff5d8f';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.arc(40, 30, 19, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Pink spiral swirl
+                ctx.strokeStyle = '#ff5d8f';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                for (let t = 0; t < Math.PI * 3.8; t += 0.15) {
+                    const rad = 1.35 * t;
+                    const x = 40 + Math.cos(t) * rad;
+                    const y = 30 + Math.sin(t) * rad;
+                    if (t === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Glossy highlight dot
+                ctx.fillStyle = 'rgba(255,255,255,0.85)';
+                ctx.beginPath();
+                ctx.arc(33, 21, 2.2, 0, Math.PI * 2);
                 ctx.fill();
             } else if (type === 'flowers') {
                 const flowers = [
@@ -2246,11 +2614,6 @@
             ctx.textBaseline = 'middle';
 
             ctx.save();
-            ctx.shadowColor = 'transparent';
-            ctx.shadowBlur = 6;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 2;
-
             const brandText = 'hey nonna';
             const studioBadgeText = 'STUDIO';
 
@@ -2306,8 +2669,6 @@
                 ctx.font = '700 13px "Space Mono", monospace';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.shadowColor = 'transparent';
-                ctx.shadowBlur = 4;
                 ctx.fillText(dateStr, totalW / 2, centerY + 18);
                 ctx.restore();
             }
@@ -2325,12 +2686,6 @@
         });
 
         clearPicksBtn.addEventListener('click', () => {
-            if (state.boothMode === 'video') {
-                state.placedDoodles = [];
-                renderDoodlesOnStage();
-                showToast('Doodles cleared.', 'info');
-                return;
-            }
             state.selectedIndices = [];
             state.placedDoodles = [];
             renderDoodlesOnStage();
@@ -2339,11 +2694,6 @@
         });
 
         discardSelectionBtn.addEventListener('click', () => {
-            stopVideoPreviewLoop();
-            if (state.rawVideoUrl) {
-                URL.revokeObjectURL(state.rawVideoUrl);
-                state.rawVideoUrl = null;
-            }
             selectionModal.classList.add('hidden');
             state.capturedPool = [];
             state.selectedIndices = [];
@@ -2351,7 +2701,6 @@
         });
 
         function updateSelectionStateUI() {
-            if (state.boothMode === 'video') return;
             const rule = SHOT_RULES[state.photoCount];
             const picked = state.selectedIndices.length;
             const needed = rule.pickCount;
@@ -2369,112 +2718,7 @@
             window.print();
         });
 
-        async function exportCustomizedVideo() {
-            if (state.isRenderingVideoExport) return;
-            state.isRenderingVideoExport = true;
-            confirmFrameBtn.disabled = true;
-            confirmFrameText.textContent = 'Saving Video...';
-
-            const previewDisplayW = liveVideoPreviewCanvas.clientWidth || 360;
-            stopVideoPreviewLoop();
-
-            const exportCanvas = document.getElementById('video-record-canvas');
-            const ctx = exportCanvas.getContext('2d');
-
-            rawRecordedVideoEl.loop = false;
-            rawRecordedVideoEl.currentTime = 0;
-
-            await new Promise(res => {
-                if (rawRecordedVideoEl.readyState >= 2) res();
-                else rawRecordedVideoEl.onloadeddata = res;
-            });
-
-            drawComposedVideoFrame(ctx, exportCanvas, true, previewDisplayW);
-
-            const probeTrack = exportCanvas.captureStream(0).getVideoTracks()[0];
-            const supportsManualTrack = probeTrack && typeof probeTrack.requestFrame === 'function';
-            if (!supportsManualTrack && probeTrack) probeTrack.stop();
-
-            const canvasStream = supportsManualTrack ? exportCanvas.captureStream(0) : exportCanvas.captureStream(24);
-            const videoTrack = canvasStream.getVideoTracks()[0];
-
-            const mimeTypes = ['video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
-            const supportedMime = mimeTypes.find(m => MediaRecorder.isTypeSupported(m)) || '';
-            const chunks = [];
-            const recorder = supportedMime
-                ? new MediaRecorder(canvasStream, { mimeType: supportedMime, videoBitsPerSecond: 2500000 })
-                : new MediaRecorder(canvasStream);
-
-            recorder.ondataavailable = (e) => {
-                if (e.data && e.data.size > 0) chunks.push(e.data);
-            };
-
-            let animId = null;
-            const renderFrame = () => {
-                if (rawRecordedVideoEl.paused || rawRecordedVideoEl.ended) return;
-                drawComposedVideoFrame(ctx, exportCanvas, true, previewDisplayW);
-                if (videoTrack && typeof videoTrack.requestFrame === 'function') {
-                    videoTrack.requestFrame();
-                }
-                animId = requestAnimationFrame(renderFrame);
-            };
-
-            await new Promise((resolve) => {
-                recorder.onstop = () => {
-                    cancelAnimationFrame(animId);
-                    const blobType = supportedMime || 'video/webm';
-                    const blob = new Blob(chunks, { type: blobType });
-                    const finalVideoUrl = URL.createObjectURL(blob);
-                    const orientLabel = state.orientation === 'portrait' ? 'Portrait' : 'Landscape';
-
-                    addToGallery({
-                        id: Date.now().toString(),
-                        mediaType: 'video',
-                        url: finalVideoUrl,
-                        blobUrl: finalVideoUrl,
-                        title: `${orientLabel} Booth Video (${state.rawVideoDurationSec}s)`,
-                        meta: `${state.frameTheme.name} • ${state.postFilter.name}`,
-                        ext: blobType.includes('mp4') ? 'mp4' : 'webm'
-                    });
-
-                    if (state.rawVideoUrl) {
-                        URL.revokeObjectURL(state.rawVideoUrl);
-                        state.rawVideoUrl = null;
-                    }
-                    rawRecordedVideoEl.loop = true;
-                    resolve();
-                };
-
-                recorder.start();
-                rawRecordedVideoEl.play().then(() => {
-                    renderFrame();
-                }).catch(() => {
-                    if (recorder.state !== 'inactive') recorder.stop();
-                });
-
-                rawRecordedVideoEl.onended = () => {
-                    drawComposedVideoFrame(ctx, exportCanvas, true, previewDisplayW);
-                    if (videoTrack && typeof videoTrack.requestFrame === 'function') {
-                        videoTrack.requestFrame();
-                    }
-                    setTimeout(() => {
-                        if (recorder.state !== 'inactive') recorder.stop();
-                    }, 80);
-                };
-            });
-
-            state.isRenderingVideoExport = false;
-            confirmFrameBtn.disabled = false;
-            selectionModal.classList.add('hidden');
-            showToast('Framed booth video saved to gallery!', 'success');
-        }
-
         confirmFrameBtn.addEventListener('click', () => {
-            if (state.boothMode === 'video') {
-                exportCustomizedVideo();
-                return;
-            }
-
             const finalDataUrl = renderComposedPhotoFrame();
             const orientLabel = state.orientation === 'portrait' ? 'Portrait' : 'Landscape';
             const framedReplayCanvases = state.capturedPool.map(shotCanvas => renderSingleShotInFrameCanvas(shotCanvas));
@@ -2496,7 +2740,7 @@
                 blobUrl: blobUrl,
                 framedDataUrl: finalDataUrl,
                 title: `${state.photoCount}-Photo ${orientLabel} Frame`,
-                meta: `${state.frameTheme.name} • ${state.postFilter.name}`,
+                meta: `${state.frameTheme.name} • ${state.postFilter.name}${state.activeEffect.id !== 'none' ? ` • ${state.activeEffect.name}` : ''}`,
                 ext: 'png',
                 capturedPoolSnapshot: framedReplayCanvases
             });
@@ -2504,113 +2748,6 @@
             selectionModal.classList.add('hidden');
             showToast('hey nonna studio frame saved to gallery!', 'success');
         });
-
-        async function runContinuousVideoSession() {
-            const ok = await runCountdown(state.timerSeconds);
-            if (!ok || state.cancelRequested) return;
-
-            const capW = 720;
-            const capH = 540;
-            const vw = videoEl.videoWidth || 1280;
-            const vh = videoEl.videoHeight || 960;
-
-            const rawCanvas = document.getElementById('video-record-canvas');
-            rawCanvas.width = capW;
-            rawCanvas.height = capH;
-            const ctx = rawCanvas.getContext('2d');
-
-            let isRecordingActive = true;
-            function drawRawVideoLoop() {
-                if (!isRecordingActive) return;
-                ctx.save();
-                ctx.filter = state.activeFilter.css;
-                if (state.isMirrored) {
-                    ctx.translate(capW, 0);
-                    ctx.scale(-1, 1);
-                }
-                ctx.drawImage(videoEl, 0, 0, vw, vh, 0, 0, capW, capH);
-                ctx.restore();
-                state.videoRecordAnimId = requestAnimationFrame(drawRawVideoLoop);
-            }
-
-            drawRawVideoLoop();
-
-            const canvasStream = rawCanvas.captureStream(24);
-            const mimeTypes = ['video/webm;codecs=vp8', 'video/webm', 'video/mp4'];
-            const supportedMime = mimeTypes.find(m => MediaRecorder.isTypeSupported(m)) || '';
-
-            state.recordedChunks = [];
-            try {
-                state.mediaRecorder = supportedMime
-                    ? new MediaRecorder(canvasStream, { mimeType: supportedMime, videoBitsPerSecond: 2200000 })
-                    : new MediaRecorder(canvasStream);
-            } catch (err) {
-                isRecordingActive = false;
-                showToast('Video recording not supported in this browser.', 'error');
-                return;
-            }
-
-            return new Promise((resolve) => {
-                let elapsedSec = 0;
-                const maxDuration = state.videoDuration;
-
-                recBadge.classList.remove('hidden');
-                recBadge.classList.add('flex');
-                liveSequenceCard.classList.remove('hidden');
-                liveSequenceCard.classList.add('flex');
-                sequenceTitle.textContent = 'Recording Booth Video...';
-                sequenceSubtext.textContent = maxDuration > 0 ? `Recording ${maxDuration}s clip (click Stop anytime)` : 'Click Stop when finished!';
-                cancelSequenceBtn.textContent = 'Stop & Customize';
-
-                function updateRecClock() {
-                    const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
-                    const secs = String(elapsedSec % 60).padStart(2, '0');
-                    recTimerText.textContent = maxDuration > 0 ? `REC ${secs}s / ${maxDuration}s` : `REC ${mins}:${secs}`;
-                }
-                updateRecClock();
-
-                state.videoTimerInterval = setInterval(() => {
-                    elapsedSec++;
-                    updateRecClock();
-                    if (maxDuration > 0 && elapsedSec >= maxDuration) stopActiveVideoRecording();
-                }, 1000);
-
-                function stopActiveVideoRecording() {
-                    if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') state.mediaRecorder.stop();
-                }
-
-                const onStopClick = () => stopActiveVideoRecording();
-                cancelSequenceBtn.addEventListener('click', onStopClick, { once: true });
-
-                state.mediaRecorder.ondataavailable = (e) => {
-                    if (e.data && e.data.size > 0) state.recordedChunks.push(e.data);
-                };
-
-                state.mediaRecorder.onstop = () => {
-                    isRecordingActive = false;
-                    cancelAnimationFrame(state.videoRecordAnimId);
-                    clearInterval(state.videoTimerInterval);
-                    cancelSequenceBtn.removeEventListener('click', onStopClick);
-                    cancelSequenceBtn.textContent = 'Stop';
-
-                    recBadge.classList.add('hidden');
-                    recBadge.classList.remove('flex');
-                    liveSequenceCard.classList.add('hidden');
-                    liveSequenceCard.classList.remove('flex');
-
-                    const blobType = supportedMime || 'video/webm';
-                    const blob = new Blob(state.recordedChunks, { type: blobType });
-                    if (state.rawVideoUrl) URL.revokeObjectURL(state.rawVideoUrl);
-                    state.rawVideoUrl = URL.createObjectURL(blob);
-                    state.rawVideoDurationSec = elapsedSec || 1;
-
-                    openVideoCustomizationModal();
-                    resolve();
-                };
-
-                state.mediaRecorder.start(200);
-            });
-        }
 
         async function handlePrimaryAction() {
             if (state.isBusy) return;
@@ -3007,6 +3144,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             applyTheme(systemPrefersDark);
+            renderEffectButtons();
             renderFilterButtons();
             renderFrameThemes();
             renderDoodleToolbar();
