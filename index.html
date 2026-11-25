@@ -171,7 +171,8 @@
                 </button>
 
                 <button id="sound-toggle-btn" title="Toggle Shutter & Beep Sounds" class="p-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/90 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 transition flex items-center gap-2 text-xs font-semibold cursor-pointer">
-                    <i data-lucide="volume-2" id="sound-icon" class="w-4 h-4 text-[#ff5656]"></i>
+                    <i data-lucide="volume-2" id="sound-icon-on" class="w-4 h-4 text-[#ff5656]"></i>
+                    <i data-lucide="volume-x" id="sound-icon-off" class="w-4 h-4 text-zinc-400 hidden"></i>
                     <span class="hidden md:inline" id="sound-label">Sound On</span>
                 </button>
 
@@ -225,7 +226,7 @@
                     </div>
 
                     <button id="mirror-btn" title="Mirror Viewfinder" class="pointer-events-auto p-2.5 rounded-xl bg-black/65 hover:bg-black/80 backdrop-blur-md border border-white/15 text-white transition flex items-center gap-1.5 text-xs font-medium cursor-pointer">
-                        <i data-lucide="flip-horizontal-2" class="w-4 h-4 text-[#ff5656]"></i>
+                        <i data-lucide="flip-vertical-2" class="w-4 h-4 text-[#ff5656]"></i>
                         <span class="hidden sm:inline">Mirror: On</span>
                     </button>
                 </div>
@@ -344,8 +345,8 @@
                     </div>
                 </div>
 
-                <!-- Primary Action Button -->
-                <div class="pt-1">
+                <!-- Primary Action Button (Desktop Right Panel) -->
+                <div class="pt-1 hidden lg:block">
                     <button id="shutter-btn" class="w-full py-4 px-6 rounded-2xl bg-[#ff5656] hover:bg-[#e64545] text-white font-bold text-base tracking-wide shadow-xl shadow-[#ff5656]/30 transition transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 cursor-pointer">
                         <span id="shutter-btn-dot" class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
                             <span class="w-3.5 h-3.5 rounded-full bg-white"></span>
@@ -375,6 +376,22 @@
             </div>
         </div>
     </main>
+
+    <!-- Mobile & iPad Sticky Bottom Shutter Bar -->
+    <div id="mobile-shutter-bar" class="lg:hidden sticky bottom-0 z-20 bg-white/92 dark:bg-[#16161d]/92 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
+        <div class="max-w-2xl mx-auto flex flex-col items-center">
+            <button id="mobile-shutter-btn" type="button" class="w-full py-3.5 px-5 rounded-2xl bg-[#ff5656] hover:bg-[#e64545] text-white font-bold text-sm sm:text-base tracking-wide shadow-lg shadow-[#ff5656]/30 transition transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2.5 cursor-pointer">
+                <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+                    <span class="w-3 h-3 rounded-full bg-white"></span>
+                </span>
+                <span id="mobile-shutter-btn-text">Start 8-Shot Session</span>
+            </button>
+            <p id="mobile-shutter-hint" class="text-center text-[11px] text-zinc-500 dark:text-zinc-400 mt-1.5">
+                Takes 8 photos, then lets you pick your favorite 4!
+            </p>
+        </div>
+    </div>
+
 
     <!-- Gallery Section -->
     <section class="max-w-7xl w-full mx-auto px-4 sm:px-6 pb-12">
@@ -469,13 +486,25 @@
                     </div>
                 </div>
 
-                <!-- Right: Live Frame Preview with Draggable Doodles -->
-                <div id="printable-preview-area" class="lg:col-span-6 flex flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-950/80 rounded-2xl p-4 border border-zinc-200 dark:border-zinc-800 relative overflow-hidden">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">Live Frame Preview (Drag or Click Doodles)</span>
-                    <div id="preview-stage" class="relative inline-flex items-center justify-center overflow-hidden select-none">
-                        <img id="live-frame-preview-img" src="" alt="Live Frame Preview" class="max-h-[46vh] w-auto object-contain rounded-xl shadow-xl pointer-events-none">
-                        <canvas id="live-video-preview-canvas" class="hidden max-h-[46vh] w-auto object-contain rounded-xl shadow-xl pointer-events-none"></canvas>
-                        <div id="sticker-canvas-layer" class="absolute inset-0 overflow-hidden rounded-xl"></div>
+                <!-- Right: Live Frame Preview with Draggable Doodles & Zoom -->
+                <div id="printable-preview-area" class="lg:col-span-6 flex flex-col items-center justify-between bg-zinc-100 dark:bg-zinc-950/80 rounded-2xl p-3 sm:p-4 border border-zinc-200 dark:border-zinc-800 relative overflow-hidden min-h-[340px]">
+                    <div class="w-full flex items-center justify-between gap-2 mb-2 z-10">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Live Frame Preview</span>
+                        <div class="flex items-center gap-1 bg-white/90 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-700 rounded-xl px-1.5 py-1 shadow-xs">
+                            <button id="preview-zoom-out-btn" type="button" title="Zoom Out" class="w-6 h-6 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-bold text-sm flex items-center justify-center cursor-pointer">−</button>
+                            <span id="preview-zoom-label" class="text-[11px] font-bold text-zinc-600 dark:text-zinc-300 min-w-[40px] text-center select-none">100%</span>
+                            <button id="preview-zoom-in-btn" type="button" title="Zoom In" class="w-6 h-6 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-bold text-sm flex items-center justify-center cursor-pointer">+</button>
+                            <button id="preview-zoom-reset-btn" type="button" title="Reset Zoom" class="ml-0.5 px-1.5 h-6 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-[10px] font-bold text-[#ff5656] flex items-center justify-center cursor-pointer">Reset</button>
+                        </div>
+                    </div>
+                    <div id="preview-viewport" class="w-full flex-1 flex items-center justify-center overflow-hidden touch-none cursor-grab active:cursor-grabbing relative">
+                        <div id="preview-zoom-wrapper" class="transition-transform duration-75 ease-out origin-center will-change-transform">
+                            <div id="preview-stage" class="relative inline-flex items-center justify-center overflow-hidden select-none">
+                                <img id="live-frame-preview-img" src="" alt="Live Frame Preview" class="max-h-[46vh] w-auto object-contain rounded-xl shadow-xl pointer-events-none">
+                                <canvas id="live-video-preview-canvas" class="hidden max-h-[46vh] w-auto object-contain rounded-xl shadow-xl pointer-events-none"></canvas>
+                                <div id="sticker-canvas-layer" class="absolute inset-0 overflow-hidden rounded-xl"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -498,10 +527,10 @@
         </div>
     </div>
 
-    <!-- Gallery Lightbox Modal (Save & Print — QR Code Removed) -->
-    <div id="preview-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-[#16161d] border border-zinc-200 dark:border-zinc-800 rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[92dvh] animate-pop-in">
-            <div class="px-5 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+    <!-- Gallery Lightbox Modal (Full Uncropped Frame + Process Replay Preview) -->
+    <div id="preview-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5">
+        <div class="bg-white dark:bg-[#16161d] border border-zinc-200 dark:border-zinc-800 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[94dvh] animate-pop-in">
+            <div class="px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
                 <div>
                     <h3 id="modal-title" class="brand-logo text-lg text-zinc-900 dark:text-white lowercase">hey nonna preview</h3>
                     <p id="modal-meta" class="text-xs text-zinc-500 dark:text-zinc-400">High Resolution</p>
@@ -511,9 +540,13 @@
                 </button>
             </div>
 
-            <div class="p-6 bg-zinc-100 dark:bg-zinc-950/90 flex-1 overflow-y-auto flex flex-col items-center justify-center custom-scrollbar">
-                <img id="modal-image" src="" alt="Captured preview" class="hidden max-h-[62vh] w-auto rounded-xl shadow-2xl object-contain">
-                <video id="modal-video" src="" controls autoplay loop playsinline webkit-playsinline class="hidden max-h-[62vh] w-auto rounded-xl shadow-2xl object-contain"></video>
+            <div id="modal-body-scroll" class="p-4 sm:p-6 bg-zinc-100 dark:bg-zinc-950/90 flex-1 overflow-y-auto custom-scrollbar">
+                <div id="modal-content-layout" class="w-full min-h-full flex flex-col md:flex-row items-center justify-center gap-5 sm:gap-6">
+                    <div class="flex items-center justify-center max-w-full">
+                        <img id="modal-image" src="" alt="Captured preview" class="hidden max-h-[66dvh] max-w-full w-auto h-auto rounded-xl shadow-2xl object-contain">
+                        <video id="modal-video" src="" controls autoplay loop playsinline webkit-playsinline class="hidden max-h-[66dvh] max-w-full w-auto h-auto rounded-xl shadow-2xl object-contain"></video>
+                    </div>
+                </div>
             </div>
 
             <div class="px-5 py-4 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3">
@@ -563,19 +596,19 @@
 
         // 14 Frame Designs
         const FRAME_THEMES = [
-            { id: 'coral', name: 'hey nonna Originals', bg: '#ff5656', text: '#ffffff', subtext: '#ffe4e4', border: '#e04343', pattern: 'none' },
+            { id: 'coral', name: 'Coral', bg: '#ff5656', text: '#ffffff', subtext: '#ffe4e4', border: '#e04343', pattern: 'none' },
             { id: 'white', name: 'Studio White', bg: '#ffffff', text: '#18181b', subtext: '#71717a', border: '#e4e4e7', pattern: 'none' },
             { id: 'noir', name: 'Midnight Noir', bg: '#121216', text: '#ffffff', subtext: '#ff5656', border: '#27272f', pattern: 'none' },
             { id: 'blush', name: 'Soft Blush', bg: '#fff0f0', text: '#ff5656', subtext: '#9f4a4a', border: '#ffd6d6', pattern: 'none' },
             { id: 'cream', name: 'Retro Cream', bg: '#f8f2e4', text: '#3f352c', subtext: '#8c7a6b', border: '#e6dcc8', pattern: 'none' },
-            { id: 'checker', name: 'Pink Tiles', bg: '#fff5f5', text: '#ff5656', subtext: '#18181b', border: '#ff5656', pattern: 'checker' },
-            { id: 'pink-check', name: 'Cute Checkered', bg: '#ffe8ec', text: '#d63384', subtext: '#a61e4d', border: '#ffb3c1', pattern: 'pink-check' },
-            { id: 'bow-stripe', name: 'VS Stripes', bg: '#fff0f3', text: '#c2255c', subtext: '#9f1239', border: '#ff8787', pattern: 'bow-stripe' },
-            { id: 'pastel-hearts', name: 'Pastel Hearts', bg: '#ffffff', text: '#495057', subtext: '#868e96', border: '#ced4da', pattern: 'pastel-hearts' },
-            { id: 'crayon-dots', name: 'Raindow Dots', bg: '#fffdf9', text: '#343a40', subtext: '#868e96', border: '#ffe8cc', pattern: 'crayon-dots' },
+            { id: 'checker', name: 'Roni Checker', bg: '#fff5f5', text: '#ff5656', subtext: '#18181b', border: '#ff5656', pattern: 'checker' },
+            { id: 'pink-check', name: 'Pink Gingham', bg: '#ffe8ec', text: '#d63384', subtext: '#a61e4d', border: '#ffb3c1', pattern: 'pink-check' },
+            { id: 'bow-stripe', name: 'Bow Stripes', bg: '#fff0f3', text: '#c2255c', subtext: '#9f1239', border: '#ff8787', pattern: 'bow-stripe' },
+            { id: 'pastel-hearts', name: 'Pastel Hearts String', bg: '#ffffff', text: '#495057', subtext: '#868e96', border: '#ced4da', pattern: 'pastel-hearts' },
+            { id: 'crayon-dots', name: 'Crayon Dots Grid', bg: '#fffdf9', text: '#343a40', subtext: '#868e96', border: '#ffe8cc', pattern: 'crayon-dots' },
             { id: 'confetti', name: 'Party Confetti', bg: '#ffffff', text: '#5c5c5c', subtext: '#9e9e9e', border: '#e0e0e0', pattern: 'confetti' },
-            { id: 'pink-scatter', name: 'Pink Hearts', bg: '#fff0f5', text: '#d63384', subtext: '#a61e4d', border: '#f8bbd0', pattern: 'pink-scatter' },
-            { id: 'burgundy-check', name: 'Checkered Hearts', bg: '#f5e6e8', text: '#6b2737', subtext: '#8f3b4e', border: '#c98a96', pattern: 'burgundy-check' },
+            { id: 'pink-scatter', name: 'Pink Scatter Hearts', bg: '#fff0f5', text: '#d63384', subtext: '#a61e4d', border: '#f8bbd0', pattern: 'pink-scatter' },
+            { id: 'burgundy-check', name: 'Burgundy Heart Check', bg: '#f5e6e8', text: '#6b2737', subtext: '#8f3b4e', border: '#c98a96', pattern: 'burgundy-check' },
             { id: 'lavender-daisy', name: 'Lavender Daisies', bg: '#e5d4f7', text: '#6741d9', subtext: '#5f3dc4', border: '#c4a7e7', pattern: 'lavender-daisy' }
         ];
 
@@ -714,12 +747,18 @@
             state.isDarkMode = isDark;
             document.documentElement.classList.toggle('dark', isDark);
 
-            themeIconSun.classList.toggle('hidden', isDark);
-            themeIconMoon.classList.toggle('hidden', !isDark);
+            const tSun = document.getElementById('theme-icon-sun');
+            const tMoon = document.getElementById('theme-icon-moon');
+            const cSun = document.getElementById('cover-icon-sun');
+            const cMoon = document.getElementById('cover-icon-moon');
+
+            // Sun for Light mode, Moon for Dark mode
+            if (tSun) tSun.classList.toggle('hidden', isDark);
+            if (tMoon) tMoon.classList.toggle('hidden', !isDark);
             themeLabel.textContent = isDark ? 'Dark' : 'Light';
 
-            coverIconSun.classList.toggle('hidden', isDark);
-            coverIconMoon.classList.toggle('hidden', !isDark);
+            if (cSun) cSun.classList.toggle('hidden', isDark);
+            if (cMoon) cMoon.classList.toggle('hidden', !isDark);
             coverThemeLabel.textContent = isDark ? 'Dark' : 'Light';
         }
 
@@ -937,8 +976,14 @@
         function updatePrimaryActionUI() {
             const rule = SHOT_RULES[state.photoCount];
             shotRuleBadge.textContent = `${rule.totalShots} shots → pick ${rule.pickCount}`;
-            shutterBtnText.textContent = `Start ${rule.totalShots}-Shot Session`;
-            shutterHint.textContent = `Takes ${rule.totalShots} photos with a ${state.timerSeconds}s timer per shot, then lets you pick your favorite ${rule.pickCount}!`;
+            const label = `Start ${rule.totalShots}-Shot Session`;
+            const hint = `Takes ${rule.totalShots} photos with a ${state.timerSeconds}s timer per shot, then lets you pick your favorite ${rule.pickCount}!`;
+            shutterBtnText.textContent = label;
+            shutterHint.textContent = hint;
+            const mobText = document.getElementById('mobile-shutter-btn-text');
+            const mobHint = document.getElementById('mobile-shutter-hint');
+            if (mobText) mobText.textContent = label;
+            if (mobHint) mobHint.textContent = hint;
         }
 
         document.querySelectorAll('.booth-mode-btn').forEach(btn => {
@@ -1029,17 +1074,18 @@
 
         soundToggleBtn.addEventListener('click', async () => {
             state.soundEnabled = !state.soundEnabled;
+            const iconOn = document.getElementById('sound-icon-on');
+            const iconOff = document.getElementById('sound-icon-off');
             if (state.soundEnabled) {
                 await initAudio();
-                soundIcon.setAttribute('data-lucide', 'volume-2');
-                soundIcon.classList.add('text-[#ff5656]');
+                if (iconOn) iconOn.classList.remove('hidden');
+                if (iconOff) iconOff.classList.add('hidden');
                 soundLabel.textContent = 'Sound On';
             } else {
-                soundIcon.setAttribute('data-lucide', 'volume-x');
-                soundIcon.classList.remove('text-[#ff5656]');
+                if (iconOn) iconOn.classList.add('hidden');
+                if (iconOff) iconOff.classList.remove('hidden');
                 soundLabel.textContent = 'Muted';
             }
-            lucide.createIcons();
         });
 
         cameraSelectBtn.addEventListener('click', () => {
@@ -1198,6 +1244,7 @@
             renderDoodleToolbar();
             renderDoodlesOnStage();
             updateSelectionStateUI();
+            resetPreviewZoom();
             selectionModal.classList.remove('hidden');
             lucide.createIcons();
         }
@@ -1225,6 +1272,7 @@
             renderDoodleToolbar();
             renderDoodlesOnStage();
 
+            resetPreviewZoom();
             selectionModal.classList.remove('hidden');
             lucide.createIcons();
 
@@ -1402,6 +1450,7 @@
             stickerCanvasLayer.innerHTML = '';
             state.placedDoodles.forEach(doodle => {
                 const el = document.createElement('div');
+                el.dataset.doodleItem = '1';
                 el.className = 'pointer-events-auto absolute cursor-grab active:cursor-grabbing select-none flex items-center justify-center group touch-none rounded-xl border border-dashed border-[#ff5656]/40 hover:border-[#ff5656]';
                 el.style.left = `${doodle.x}px`;
                 el.style.top = `${doodle.y}px`;
@@ -1481,11 +1530,11 @@
 
                 const onPointerMove = (e) => {
                     if (!isDragging || isResizing) return;
-                    const dx = e.clientX - startX;
-                    const dy = e.clientY - startY;
-                    const stageRect = stickerCanvasLayer.getBoundingClientRect();
-                    const maxX = Math.max(0, stageRect.width - doodle.size);
-                    const maxY = Math.max(0, stageRect.height - doodle.size);
+                    const z = (typeof previewZoomState !== 'undefined' && previewZoomState.scale) ? previewZoomState.scale : 1;
+                    const dx = (e.clientX - startX) / z;
+                    const dy = (e.clientY - startY) / z;
+                    const maxX = Math.max(0, stickerCanvasLayer.clientWidth - doodle.size);
+                    const maxY = Math.max(0, stickerCanvasLayer.clientHeight - doodle.size);
                     doodle.x = Math.min(maxX, Math.max(0, origX + dx));
                     doodle.y = Math.min(maxY, Math.max(0, origY + dy));
                     el.style.left = `${doodle.x}px`;
@@ -1508,6 +1557,120 @@
                 stickerCanvasLayer.appendChild(el);
             });
         }
+
+
+        // Live Frame Preview Zoom & Pan Controller (+ / - buttons, mouse wheel / trackpad pinch, touch pinch & drag)
+        const previewZoomState = {
+            scale: 1,
+            panX: 0,
+            panY: 0,
+            minScale: 0.6,
+            maxScale: 3.0
+        };
+
+        function applyPreviewZoomTransform() {
+            const wrapper = document.getElementById('preview-zoom-wrapper');
+            const label = document.getElementById('preview-zoom-label');
+            if (!wrapper) return;
+            if (previewZoomState.scale <= 1) {
+                previewZoomState.panX = 0;
+                previewZoomState.panY = 0;
+            }
+            wrapper.style.transform = `translate(${previewZoomState.panX}px, ${previewZoomState.panY}px) scale(${previewZoomState.scale})`;
+            if (label) label.textContent = `${Math.round(previewZoomState.scale * 100)}%`;
+        }
+
+        function setPreviewZoom(nextScale) {
+            previewZoomState.scale = Math.min(previewZoomState.maxScale, Math.max(previewZoomState.minScale, Number(nextScale.toFixed(2))));
+            applyPreviewZoomTransform();
+        }
+
+        function resetPreviewZoom() {
+            previewZoomState.scale = 1;
+            previewZoomState.panX = 0;
+            previewZoomState.panY = 0;
+            applyPreviewZoomTransform();
+        }
+
+        (function initPreviewZoomControls() {
+            const zoomInBtn = document.getElementById('preview-zoom-in-btn');
+            const zoomOutBtn = document.getElementById('preview-zoom-out-btn');
+            const zoomResetBtn = document.getElementById('preview-zoom-reset-btn');
+            const viewport = document.getElementById('preview-viewport');
+
+            if (zoomInBtn) zoomInBtn.addEventListener('click', () => setPreviewZoom(previewZoomState.scale + 0.25));
+            if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => setPreviewZoom(previewZoomState.scale - 0.25));
+            if (zoomResetBtn) zoomResetBtn.addEventListener('click', resetPreviewZoom);
+
+            if (!viewport) return;
+
+            // Mouse wheel & Trackpad pinch-to-zoom (ctrlKey is set automatically by browsers for trackpad pinch gestures)
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const intensity = e.ctrlKey ? 0.012 : 0.002;
+                const delta = -e.deltaY * intensity;
+                setPreviewZoom(previewZoomState.scale + delta);
+            }, { passive: false });
+
+            // Pan when zoomed in (mouse/single touch on background)
+            let isPanning = false;
+            let panStartX = 0, panStartY = 0;
+            let origPanX = 0, origPanY = 0;
+
+            viewport.addEventListener('pointerdown', (e) => {
+                if (e.target.closest('.doodle-delete-btn') || e.target.closest('.doodle-resize-handle') || e.target.closest('[data-doodle-item]')) return;
+                if (previewZoomState.scale <= 1) return;
+                isPanning = true;
+                panStartX = e.clientX;
+                panStartY = e.clientY;
+                origPanX = previewZoomState.panX;
+                origPanY = previewZoomState.panY;
+                viewport.setPointerCapture(e.pointerId);
+            });
+
+            viewport.addEventListener('pointermove', (e) => {
+                if (!isPanning) return;
+                previewZoomState.panX = origPanX + (e.clientX - panStartX);
+                previewZoomState.panY = origPanY + (e.clientY - panStartY);
+                applyPreviewZoomTransform();
+            });
+
+            viewport.addEventListener('pointerup', (e) => {
+                if (!isPanning) return;
+                isPanning = false;
+                try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
+            });
+
+            // Two-finger Touch Pinch-to-Zoom on mobile & iPad
+            let initialPinchDist = null;
+            let initialPinchScale = 1;
+
+            viewport.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    initialPinchDist = Math.hypot(dx, dy);
+                    initialPinchScale = previewZoomState.scale;
+                }
+            }, { passive: true });
+
+            viewport.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2 && initialPinchDist) {
+                    e.preventDefault();
+                    const dx = e.touches[0].clientX - e.touches[1].clientX;
+                    const dy = e.touches[0].clientY - e.touches[1].clientY;
+                    const currentDist = Math.hypot(dx, dy);
+                    const ratio = currentDist / initialPinchDist;
+                    setPreviewZoom(initialPinchScale * ratio);
+                }
+            }, { passive: false });
+
+            viewport.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) {
+                    initialPinchDist = null;
+                }
+            });
+        })();
 
         function getDoodleSvgHtml(type, size) {
             const sz = size || 52;
@@ -2439,16 +2602,21 @@
             state.isBusy = true;
             state.cancelRequested = false;
             shutterBtn.disabled = true;
+            const mobBtn = document.getElementById('mobile-shutter-btn');
+            if (mobBtn) mobBtn.disabled = true;
 
             try {
                 await runPhotoBoothSession();
             } finally {
                 state.isBusy = false;
                 shutterBtn.disabled = false;
+                if (mobBtn) mobBtn.disabled = false;
             }
         }
 
         shutterBtn.addEventListener('click', handlePrimaryAction);
+        const mobileShutterBtn = document.getElementById('mobile-shutter-btn');
+        if (mobileShutterBtn) mobileShutterBtn.addEventListener('click', handlePrimaryAction);
 
         cancelSequenceBtn.addEventListener('click', () => {
             if (state.boothMode === 'photo') state.cancelRequested = true;
@@ -2696,55 +2864,84 @@
                 modalDownloadLabel.textContent = 'Save PNG';
 
                 if (item.capturedPoolSnapshot && item.capturedPoolSnapshot.length > 0) {
-                    const previewContainer = modalImage.parentElement;
+                    const layoutContainer = document.getElementById('modal-content-layout');
+                    const replayFrames = item.capturedPoolSnapshot.map(c => c.toDataURL('image/jpeg', 0.88));
+
+                    const thumbsHtml = replayFrames.map((srcUrl, i) => `
+                        <button type="button" data-replay-thumb="${i}" title="Preview Shot #${i + 1}" class="replay-thumb-btn relative w-11 h-14 rounded-lg overflow-hidden border-2 transition cursor-pointer shrink-0 bg-zinc-950 flex items-center justify-center ${i === 0 ? 'border-[#ff5656] ring-2 ring-[#ff5656]/40 scale-105' : 'border-zinc-300 dark:border-zinc-700 opacity-75 hover:opacity-100'}">
+                            <img src="${srcUrl}" alt="Shot ${i + 1}" class="w-full h-full object-contain">
+                            <span class="absolute bottom-0.5 right-0.5 px-1 rounded bg-black/75 text-[9px] font-bold text-white">${i + 1}</span>
+                        </button>
+                    `).join('');
+
                     const replayWrapper = document.createElement('div');
                     replayWrapper.id = 'modal-replay-container';
-                    replayWrapper.className = 'mt-4 flex flex-col items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-3.5 rounded-2xl shadow-inner';
+                    replayWrapper.className = 'flex flex-col items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-4 rounded-2xl shadow-lg max-w-xs w-full shrink-0';
                     replayWrapper.innerHTML = `
-                        <span class="text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5 flex items-center gap-1.5">
-                            <i data-lucide="play-circle" class="w-3.5 h-3.5 text-[#ff5656]"></i>
-                            Process Replay (${item.capturedPoolSnapshot.length} Shots)
-                        </span>
-                        <div class="relative w-40 h-28 bg-zinc-950 rounded-xl overflow-hidden border border-zinc-300 dark:border-zinc-700 flex items-center justify-center shadow-inner">
-                            <img id="replay-img" src="" alt="Process Replay" class="w-full h-full object-cover">
+                        <div class="w-full flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                                <i data-lucide="play-circle" class="w-3.5 h-3.5 text-[#ff5656]"></i>
+                                Process Replay (${item.capturedPoolSnapshot.length} Shots)
+                            </span>
+                            <span id="replay-counter-pill" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#ff5656]/15 text-[#ff5656]">1 / ${replayFrames.length}</span>
                         </div>
-                        <div class="flex flex-wrap items-center justify-center gap-2 mt-2.5">
-                            <button id="save-all-replay-photos-btn" type="button" class="px-3 py-1.5 rounded-xl bg-[#ff5656] hover:bg-[#e64545] text-white text-xs font-bold flex items-center gap-1.5 shadow transition cursor-pointer">
+                        <div class="relative w-48 h-56 bg-zinc-100 dark:bg-zinc-950 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 flex items-center justify-center p-2 shadow-inner">
+                            <img id="replay-img" src="" alt="Process Replay" class="max-h-full max-w-full w-auto h-auto object-contain rounded-lg">
+                        </div>
+                        <div id="replay-thumbs-strip" class="w-full flex items-center justify-center gap-1.5 overflow-x-auto py-2.5 mt-1 custom-scrollbar">
+                            ${thumbsHtml}
+                        </div>
+                        <div class="flex flex-wrap items-center justify-center gap-2 mt-1 w-full">
+                            <button id="save-all-replay-photos-btn" type="button" class="flex-1 px-3 py-2 rounded-xl bg-[#ff5656] hover:bg-[#e64545] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow transition cursor-pointer">
                                 <i data-lucide="images" class="w-3.5 h-3.5"></i>
-                                Save All Photos (${item.capturedPoolSnapshot.length})
+                                Save All (${item.capturedPoolSnapshot.length})
                             </button>
-                            <button id="save-replay-video-btn" type="button" class="px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
+                            <button id="save-replay-video-btn" type="button" class="flex-1 px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
                                 <i data-lucide="film" class="w-3.5 h-3.5 text-[#ff5656]"></i>
-                                Save as Video
+                                Save Video
                             </button>
                         </div>
                     `;
-                    previewContainer.appendChild(replayWrapper);
+                    layoutContainer.appendChild(replayWrapper);
 
-                    const chosenFrameUrl = item.framedDataUrl || item.url;
-                    const replayFrames = [
-                        ...item.capturedPoolSnapshot.map(c => c.toDataURL('image/jpeg', 0.85)),
-                        ...(chosenFrameUrl ? [chosenFrameUrl] : [])
-                    ];
-
-                    let frameIdx = 0;
+                    let activeReplayIdx = 0;
                     const replayImg = document.getElementById('replay-img');
+                    const counterPill = document.getElementById('replay-counter-pill');
+                    const thumbBtns = replayWrapper.querySelectorAll('.replay-thumb-btn');
                     const saveAllPhotosBtn = document.getElementById('save-all-replay-photos-btn');
                     const saveVideoBtn = document.getElementById('save-replay-video-btn');
 
-                    if (window._replayInterval) clearInterval(window._replayInterval);
+                    function showReplayFrame(idx) {
+                        activeReplayIdx = idx;
+                        if (replayImg) replayImg.src = replayFrames[idx];
+                        if (counterPill) counterPill.textContent = `${idx + 1} / ${replayFrames.length}`;
+                        thumbBtns.forEach((b, bIdx) => {
+                            const active = bIdx === idx;
+                            b.className = `replay-thumb-btn relative w-11 h-14 rounded-lg overflow-hidden border-2 transition cursor-pointer shrink-0 bg-zinc-950 flex items-center justify-center ${active ? 'border-[#ff5656] ring-2 ring-[#ff5656]/40 scale-105' : 'border-zinc-300 dark:border-zinc-700 opacity-75 hover:opacity-100'}`;
+                        });
+                    }
 
-                    replayImg.src = replayFrames[0];
-                    frameIdx = 1 % replayFrames.length;
+                    function startReplayAutoLoop() {
+                        if (window._replayInterval) clearInterval(window._replayInterval);
+                        window._replayInterval = setInterval(() => {
+                            if (!replayImg || previewModal.classList.contains('hidden')) {
+                                clearInterval(window._replayInterval);
+                                return;
+                            }
+                            showReplayFrame((activeReplayIdx + 1) % replayFrames.length);
+                        }, 1100);
+                    }
 
-                    window._replayInterval = setInterval(() => {
-                        if (!replayImg || previewModal.classList.contains('hidden')) {
-                            clearInterval(window._replayInterval);
-                            return;
-                        }
-                        replayImg.src = replayFrames[frameIdx];
-                        frameIdx = (frameIdx + 1) % replayFrames.length;
-                    }, 1100);
+                    showReplayFrame(0);
+                    startReplayAutoLoop();
+
+                    thumbBtns.forEach((btn) => {
+                        btn.addEventListener('click', () => {
+                            const idx = parseInt(btn.dataset.replayThumb, 10);
+                            showReplayFrame(idx);
+                            startReplayAutoLoop();
+                        });
+                    });
 
                     saveAllPhotosBtn.addEventListener('click', () => {
                         item.capturedPoolSnapshot.forEach((canvas, idx) => {
@@ -2761,7 +2958,7 @@
                     });
 
                     saveVideoBtn.addEventListener('click', () => {
-                        exportReplaySlideshowVideo(item.capturedPoolSnapshot, item.id, chosenFrameUrl);
+                        exportReplaySlideshowVideo(item.capturedPoolSnapshot, item.id);
                     });
                 }
             }
