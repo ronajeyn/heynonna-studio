@@ -2050,8 +2050,17 @@
                 else if (count === 8) { cols = 4; rows = 2; }
             }
 
-            const cellW = cols === 1 ? 520 : (cols === 2 ? 420 : (cols === 3 ? 360 : 310));
-            const cellH = Math.round(cellW * 0.75);
+            let cellW, cellH;
+            if (count === 1 && isPortrait) {
+                cellW = 480;
+                cellH = 640;
+            } else if (count === 1 && !isPortrait) {
+                cellW = 640;
+                cellH = 480;
+            } else {
+                cellW = cols === 1 ? 520 : (cols === 2 ? 420 : (cols === 3 ? 360 : 310));
+                cellH = Math.round(cellW * 0.75);
+            }
             const pad = 34;
             const gap = 22;
             const footerH = 110;
@@ -2074,8 +2083,20 @@
 
                 ctx.save();
                 if (shotCanvas) {
+                    const sw = shotCanvas.width || 960;
+                    const sh = shotCanvas.height || 720;
+                    const targetAspect = cellW / cellH;
+                    const currentAspect = sw / sh;
+                    let sx = 0, sy = 0, srcW = sw, srcH = sh;
+                    if (currentAspect > targetAspect) {
+                        srcW = sh * targetAspect;
+                        sx = (sw - srcW) / 2;
+                    } else if (currentAspect < targetAspect) {
+                        srcH = sw / targetAspect;
+                        sy = (sh - srcH) / 2;
+                    }
                     ctx.filter = postFilterCss;
-                    ctx.drawImage(shotCanvas, x, y, cellW, cellH);
+                    ctx.drawImage(shotCanvas, sx, sy, srcW, srcH, x, y, cellW, cellH);
                 } else {
                     ctx.fillStyle = state.isDarkMode ? '#27272a' : '#e4e4e7';
                     ctx.fillRect(x, y, cellW, cellH);
