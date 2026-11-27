@@ -6,10 +6,11 @@
     <title>hey nonna studio</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Plus Jakarta Sans / Montserrat -->
+    <!-- Google Fonts: Plus Jakarta Sans / Montserrat / One Piece Wanted Fonts / Custom Text Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=EB+Garamond:wght@700;800&family=Montserrat:ital,wght@0,700;0,800;0,900;1,700&family=Pacifico&family=Playfair+Display:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;700&family=Oswald:wght@400;700&family=Pacifico&family=Playfair+Display:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Tone.js for shutter & beep sound effects -->
@@ -341,7 +342,7 @@
                     <div class="flex items-center justify-between px-3 py-2 rounded-xl bg-[#ff5656]/10 border border-[#ff5656]/25 text-xs font-semibold text-[#ff5656]">
                         <span class="flex items-center gap-1.5">
                             <i data-lucide="sparkles" class="w-4 h-4"></i>
-                            Choose from 14 custom Frame Designs & add elements after shooting!
+                            Choose from custom frame designs, add elements & custom text after shooting!
                         </span>
                     </div>
 
@@ -354,8 +355,8 @@
                         <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
                             <span class="text-xs font-semibold text-zinc-500 whitespace-nowrap">Format:</span>
                             <select id="date-format-select" class="w-full bg-transparent text-xs font-bold text-[#ff5656] focus:outline-none cursor-pointer">
-                                <option value="long" class="dark:bg-zinc-900">Nov. 26, 2026</option>
-                                <option value="short" class="dark:bg-zinc-900">11/26/2026</option>
+                                <option value="long" class="dark:bg-zinc-900">Nov. 27, 2026</option>
+                                <option value="short" class="dark:bg-zinc-900">11/27/2026</option>
                             </select>
                         </div>
                     </div>
@@ -477,7 +478,7 @@
                         </span>
                     </div>
                     <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5" id="selection-instruction">
-                        Tap your favorite shots, pick your frame design, apply filters, and add elements (Drag to move • Click to delete)!
+                        Tap your favorite shots, pick your frame design, apply filters, and add elements or custom text (Drag to move • Click × to delete)
                     </p>
                 </div>
                 <button id="discard-selection-btn" class="px-3.5 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-semibold text-zinc-700 dark:text-zinc-300 transition cursor-pointer">
@@ -506,9 +507,29 @@
                                 <span id="step-num-frame" class="w-5 h-5 rounded-full bg-[#ff5656] text-white text-[11px] flex items-center justify-center font-bold">2</span>
                                 Frame Design
                             </span>
-                            <span id="selected-theme-name" class="text-xs font-bold text-[#ff5656]">hey nonna Coral</span>
+                            <span id="selected-theme-name" class="text-xs font-bold text-[#ff5656]">hey nonna Originals</span>
                         </div>
                         <div id="strip-theme-list" class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-44 overflow-y-auto custom-scrollbar p-1"></div>
+                    </div>
+
+                    <!-- Wanted Poster Custom Inputs (1-Pic Portrait Only) -->
+                    <div id="wanted-poster-inputs" class="hidden bg-amber-50/90 dark:bg-amber-950/30 border border-amber-300/90 dark:border-amber-800/70 rounded-2xl p-3.5">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+                                <span>☠️</span> Wanted Poster Details
+                            </span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-900/10 dark:bg-amber-400/15 text-amber-900 dark:text-amber-300">Exclusive for 1 picture in portrait mode only</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label for="wanted-name-input" class="block text-[11px] font-bold text-amber-950 dark:text-amber-200 mb-1">Pirate Name</label>
+                                <input id="wanted-name-input" type="text" maxlength="24" value="RORONOA ZORO" placeholder="Enter name..." class="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-amber-300 dark:border-amber-700 text-xs font-bold uppercase text-amber-950 dark:text-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-600">
+                            </div>
+                            <div>
+                                <label for="wanted-bounty-input" class="block text-[11px] font-bold text-amber-950 dark:text-amber-200 mb-1">Bounty (Berry)</label>
+                                <input id="wanted-bounty-input" type="text" maxlength="22" value="1,111,000,000-" placeholder="e.g. 1,111,000,000-" class="w-full px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-amber-300 dark:border-amber-700 text-xs font-bold text-amber-950 dark:text-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-600">
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Post-Capture Filter -->
@@ -522,19 +543,71 @@
                         <div id="post-filter-list" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar"></div>
                     </div>
 
-                    <!-- Crayon Doodles Palette -->
+                    <!-- Elements Palette (Dynamic: Cute Elements OR One Piece Elements) -->
                     <div class="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5">
                         <div class="flex items-center justify-between mb-2.5">
-                            <span class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
+                            <span id="elements-palette-title" class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
                                 <span id="step-num-doodle" class="w-5 h-5 rounded-full bg-[#ff5656] text-white text-[11px] flex items-center justify-center font-bold">4</span>
                                 Add Cute Elements (Drag to move • ⤢ to resize • × to delete)
                             </span>
                         </div>
                         <div id="doodle-toolbar" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar"></div>
                     </div>
+
+                    <!-- Step 5: Custom Text Box (Available on ALL frames) -->
+                    <div class="bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5">
+                        <div class="flex items-center justify-between mb-2.5">
+                            <span class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-300 flex items-center gap-1.5">
+                                <span id="step-num-text" class="w-5 h-5 rounded-full bg-[#ff5656] text-white text-[11px] flex items-center justify-center font-bold">5</span>
+                                Add Custom Text 
+                            </span>
+                        </div>
+                        <div class="flex flex-col gap-2.5">
+                            <div class="flex items-center gap-2">
+                                <input id="custom-text-input" type="text" maxlength="42" placeholder="Type message or caption..." class="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-[#ff5656]">
+                                <button id="add-custom-text-btn" type="button" class="px-3.5 py-2 rounded-xl bg-[#ff5656] hover:bg-[#e64545] text-white text-xs font-bold shadow-sm transition cursor-pointer whitespace-nowrap flex items-center gap-1">
+                                    <i data-lucide="type" class="w-3.5 h-3.5"></i>
+                                    Add Text
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <select id="custom-text-font" title="Choose Font" class="flex-1 min-w-[135px] px-2.5 py-1.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-xs font-bold text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#ff5656] cursor-pointer">
+                                    <option value="'Plus Jakarta Sans', sans-serif">Modern Sans</option>
+                                    <option value="'Montserrat', sans-serif">Bold Montserrat</option>
+                                    <option value="'Cinzel', 'Playfair Display', serif">Serif</option>
+                                    <option value="'Pacifico', cursive">Cute Script</option>
+                                    <option value="'Space Mono', monospace">Retro Typewriter</option>
+                                    <option value="'Plus Jakarta Sans', sans-serif">Modern Sans</option>
+                                    <option value="'Montserrat', sans-serif">Bold Montserrat</option>
+                                    <option value="'Oswald', sans-serif">Tall Condensed</option>
+                                    <option value="'Cinzel', 'Playfair Display', serif">Classic Serif</option>
+                                    <option value="'Lora', serif">Editorial Serif</option>
+                                    <option value="'Pacifico', cursive">Cute Script</option>
+                                    <option value="'Dancing Script', cursive">Casual Cursive</option>
+                                    <option value="'Great Vibes', cursive">Elegant Calligraphy</option>
+                                    <option value="'Space Mono', monospace">Retro Typewriter</option>
+                                </select>
+
+                                <!-- Color Wheel Picker -->
+                                <label class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 cursor-pointer" title="Pick any text color">
+                                    <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Color:</span>
+                                    <input id="custom-text-color" type="color" value="#ff5656" class="w-6 h-6 rounded-full border-0 p-0 bg-transparent cursor-pointer">
+                                </label>
+
+                                <!-- Quick Swatches -->
+                                <div class="flex items-center gap-1">
+                                    <button type="button" data-text-swatch="#ffffff" class="w-5 h-5 rounded-full bg-white border border-zinc-300 shadow-xs cursor-pointer" title="White"></button>
+                                    <button type="button" data-text-swatch="#18181b" class="w-5 h-5 rounded-full bg-zinc-900 border border-zinc-600 shadow-xs cursor-pointer" title="Black"></button>
+                                    <button type="button" data-text-swatch="#ff5656" class="w-5 h-5 rounded-full bg-[#ff5656] border border-white shadow-xs cursor-pointer" title="Coral"></button>
+                                    <button type="button" data-text-swatch="#ffd166" class="w-5 h-5 rounded-full bg-[#ffd166] border border-amber-400 shadow-xs cursor-pointer" title="Gold"></button>
+                                    <button type="button" data-text-swatch="#4b3520" class="w-5 h-5 rounded-full bg-[#4b3520] border border-amber-900 shadow-xs cursor-pointer" title="Wanted Ink"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Right: Live Frame Preview with Draggable Doodles & Zoom -->
+                <!-- Right: Live Frame Preview with Draggable Doodles, Custom Text & Zoom -->
                 <div id="printable-preview-area" class="lg:col-span-6 flex flex-col items-center justify-between bg-zinc-100 dark:bg-zinc-950/80 rounded-2xl p-3 sm:p-4 border border-zinc-200 dark:border-zinc-800 relative overflow-hidden min-h-[340px]">
                     <div class="w-full flex items-center justify-between gap-2 mb-2 z-10">
                         <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Live Frame Preview</span>
@@ -666,7 +739,8 @@
             { id: 'confetti', name: 'Party Confetti', bg: '#ffffff', text: '#5c5c5c', subtext: '#9e9e9e', border: '#e0e0e0', pattern: 'confetti' },
             { id: 'pink-scatter', name: 'Pink Hearts', bg: '#fff0f5', text: '#d63384', subtext: '#a61e4d', border: '#f8bbd0', pattern: 'pink-scatter' },
             { id: 'burgundy-check', name: 'Checkered Hearts', bg: '#f5e6e8', text: '#6b2737', subtext: '#8f3b4e', border: '#c98a96', pattern: 'burgundy-check' },
-            { id: 'lavender-daisy', name: 'Lavender Daisies', bg: '#e5d4f7', text: '#6741d9', subtext: '#5f3dc4', border: '#c4a7e7', pattern: 'lavender-daisy' }
+            { id: 'lavender-daisy', name: 'Lavender Daisies', bg: '#e5d4f7', text: '#6741d9', subtext: '#5f3dc4', border: '#c4a7e7', pattern: 'lavender-daisy' },
+            { id: 'wanted', name: 'Wanted Poster', bg: '#e8d8b5', text: '#3a2918', subtext: '#543c24', border: '#7c5d3b', pattern: 'wanted-parchment', onlyOnePortrait: true }
         ];
 
         const DOODLE_TYPES = [
@@ -680,6 +754,18 @@
             { id: 'hat', label: 'Party Hat' },
             { id: 'rays', label: 'Purple Rays' },
             { id: 'star', label: 'Star' }
+        ];
+
+        // Exclusive Elements for the One Piece Wanted Poster Frame (Ace's goggles removed, Chopper's hat uses '+')
+        const ONE_PIECE_DOODLE_TYPES = [
+            { id: 'op-straw-hat', label: "Luffy's Hat" },
+            { id: 'op-law-hat', label: "Law's Hat" },
+            { id: 'op-chopper-hat', label: "Chopper's Hat" },
+            { id: 'op-sanji-mustache', label: "Sanji's Mustache" },
+            { id: 'op-sanji-cig', label: "Sanji's Cigarette" },
+            { id: 'op-ace-hat', label: "Ace's Hat" },
+            { id: 'op-zoro-swords', label: "Zoro's 3 Swords" },
+            { id: 'op-devil-fruit', label: "Gomu Gomu Fruit" }
         ];
 
         const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -700,12 +786,15 @@
             timerSeconds: 10,
             dateFormat: 'long',
             frameTheme: FRAME_THEMES[0],
+            wantedName: 'RORONOA ZORO',
+            wantedBounty: '1,111,000,000-',
             soundEnabled: true,
             isBusy: false,
             cancelRequested: false,
             capturedPool: [],
             selectedIndices: [],
             placedDoodles: [],
+            placedTexts: [],
             mediaRecorder: null,
             recordedChunks: [],
             videoRecordAnimId: null,
@@ -716,7 +805,6 @@
             isRenderingVideoExport: false,
             gallery: [],
             activeModalItemId: null,
-            // Face tracking state
             faceMesh: null,
             faceMeshReady: false,
             latestFaceLandmarks: null,
@@ -804,6 +892,10 @@
         const themeLabel = document.getElementById('theme-label');
         const soundToggleBtn = document.getElementById('sound-toggle-btn');
         const soundLabel = document.getElementById('sound-label');
+
+        function isWantedFrameActive() {
+            return state.frameTheme.id === 'wanted' && state.photoCount === 1 && state.orientation === 'portrait';
+        }
 
         function applyTheme(isDark) {
             state.isDarkMode = isDark;
@@ -1113,7 +1205,6 @@
             const faceList = (faces && faces.length > 0)
                 ? faces.map(lm => computeFaceGeometry(lm, canvasW, canvasH, isMirrored))
                 : [{
-                    // Fallback centered pose if face is briefly outside frame
                     forehead: { x: canvasW * 0.5, y: canvasH * 0.28 },
                     chin: { x: canvasW * 0.5, y: canvasH * 0.72 },
                     leftCheek: { x: canvasW * 0.34, y: canvasH * 0.48 },
@@ -1134,7 +1225,6 @@
             faceList.forEach((f) => {
                 const s = f.faceW;
 
-                // 1. MACBOOK PHOTOBOOTH HEART CROWN
                 if (effectId === 'heart-crown') {
                     ctx.save();
                     ctx.translate(f.forehead.x, f.forehead.y);
@@ -1145,7 +1235,6 @@
                     const crownY = -s * 0.24;
                     const numHearts = 7;
 
-                    // Soft glow behind hearts
                     ctx.shadowColor = 'rgba(255, 77, 109, 0.55)';
                     ctx.shadowBlur = 14;
 
@@ -1159,15 +1248,11 @@
                         drawMiniHeart(ctx, hx, hy, heartSize, col, '#ffffff');
                     }
                     ctx.restore();
-                }
-
-                // 2. FLOWER CROWN
-                else if (effectId === 'flower-crown') {
+                } else if (effectId === 'flower-crown') {
                     ctx.save();
                     ctx.translate(f.forehead.x, f.forehead.y);
                     ctx.rotate(f.angle);
 
-                    // Green leafy vine arc
                     ctx.strokeStyle = '#52b788';
                     ctx.lineWidth = Math.max(4, s * 0.032);
                     ctx.beginPath();
@@ -1184,11 +1269,7 @@
                     ];
                     flowers.forEach(fl => drawFlowerHead(ctx, fl.x, fl.y, fl.r, fl.c));
                     ctx.restore();
-                }
-
-
-                // 4. KITTY CAT EARS & WHISKERS
-                else if (effectId === 'cat') {
+                } else if (effectId === 'cat') {
                     ctx.save();
                     ctx.translate(f.forehead.x, f.forehead.y);
                     ctx.rotate(f.angle);
@@ -1220,7 +1301,6 @@
                     });
                     ctx.restore();
 
-                    // Pink triangle nose + whiskers
                     ctx.save();
                     ctx.translate(f.noseTip.x, f.noseTip.y);
                     ctx.rotate(f.angle);
@@ -1247,10 +1327,7 @@
                         ctx.stroke();
                     });
                     ctx.restore();
-                }
-
-                // 5. DEVIL HORNS
-                else if (effectId === 'devil') {
+                } else if (effectId === 'devil') {
                     ctx.save();
                     ctx.translate(f.forehead.x, f.forehead.y);
                     ctx.rotate(f.angle);
@@ -1271,11 +1348,7 @@
                         ctx.restore();
                     });
                     ctx.restore();
-                }
-
-                // 6. ANGEL HALO & COOL SHADES
-                else if (effectId === 'cool-halo') {
-                    // Glowing Halo above forehead
+                } else if (effectId === 'cool-halo') {
                     ctx.save();
                     ctx.translate(f.forehead.x, f.forehead.y);
                     ctx.rotate(f.angle);
@@ -1287,12 +1360,7 @@
                     ctx.ellipse(0, -s * 0.28 + Math.sin(t * 2) * 4, s * 0.34, s * 0.09, 0, 0, Math.PI * 2);
                     ctx.stroke();
                     ctx.restore();
-
-                    
-                }
-
-                // 7. BUNNY EARS & NOSE
-                else if (effectId === 'bunny') {
+                } else if (effectId === 'bunny') {
                     ctx.save();
                     ctx.translate(f.forehead.x, f.forehead.y);
                     ctx.rotate(f.angle);
@@ -1318,7 +1386,6 @@
                     });
                     ctx.restore();
 
-                    // Pink bunny nose
                     ctx.save();
                     ctx.translate(f.noseTip.x, f.noseTip.y);
                     ctx.rotate(f.angle);
@@ -1435,12 +1502,86 @@
                     renderPostFilterButtons();
                     if (state.boothMode === 'photo') {
                         updateLiveFramePreview();
-                    } else {
-                        renderSingleVideoPreviewFrame();
                     }
                 });
                 postFilterListEl.appendChild(btn);
             });
+        }
+
+        function drawJollyRogerSwatch(ctx, w, h) {
+            const grad = ctx.createLinearGradient(0, 0, w, h);
+            grad.addColorStop(0, '#efe2c4');
+            grad.addColorStop(1, '#d4bc8e');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            const cx = w * 0.5;
+            const cy = h * 0.54;
+            const s = Math.min(w, h) * 0.25;
+
+            ctx.save();
+            ctx.strokeStyle = '#3a2918';
+            ctx.fillStyle = '#3a2918';
+            ctx.lineCap = 'round';
+
+            ctx.lineWidth = Math.max(2.2, s * 0.25);
+            ctx.beginPath();
+            ctx.moveTo(cx - s * 1.18, cy - s * 0.85);
+            ctx.lineTo(cx + s * 1.18, cy + s * 0.85);
+            ctx.moveTo(cx + s * 1.18, cy - s * 0.85);
+            ctx.lineTo(cx - s * 1.18, cy + s * 0.85);
+            ctx.stroke();
+
+            [
+                [-1.18, -0.85], [1.18, 0.85],
+                [1.18, -0.85], [-1.18, 0.85]
+            ].forEach(([bx, by]) => {
+                ctx.beginPath();
+                ctx.arc(cx + bx * s, cy + by * s, s * 0.16, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.beginPath();
+            ctx.arc(cx, cy - s * 0.08, s * 0.56, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.roundRect(cx - s * 0.34, cy + s * 0.18, s * 0.68, s * 0.36, s * 0.12);
+            ctx.fill();
+
+            ctx.fillStyle = '#d4a238';
+            ctx.strokeStyle = '#3a2918';
+            ctx.lineWidth = Math.max(1.3, s * 0.09);
+            ctx.beginPath();
+            ctx.ellipse(cx, cy - s * 0.42, s * 1.08, s * 0.22, -0.04, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(cx, cy - s * 0.46, s * 0.5, Math.PI, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#9e2a2b';
+            ctx.fillRect(cx - s * 0.49, cy - s * 0.55, s * 0.98, s * 0.12);
+
+            ctx.fillStyle = '#efe2c4';
+            ctx.beginPath();
+            ctx.arc(cx - s * 0.21, cy - s * 0.06, s * 0.13, 0, Math.PI * 2);
+            ctx.arc(cx + s * 0.21, cy - s * 0.06, s * 0.13, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#efe2c4';
+            ctx.lineWidth = Math.max(1.2, s * 0.09);
+            ctx.beginPath();
+            ctx.moveTo(cx - s * 0.22, cy + s * 0.32);
+            ctx.lineTo(cx + s * 0.22, cy + s * 0.32);
+            ctx.moveTo(cx - s * 0.08, cy + s * 0.23);
+            ctx.lineTo(cx - s * 0.08, cy + s * 0.42);
+            ctx.moveTo(cx + s * 0.08, cy + s * 0.23);
+            ctx.lineTo(cx + s * 0.08, cy + s * 0.42);
+            ctx.stroke();
+            ctx.restore();
         }
 
         function createThemeSwatchDataUrl(theme) {
@@ -1448,13 +1589,58 @@
             c.width = 120;
             c.height = 68;
             const ctx = c.getContext('2d');
+            if (theme.id === 'wanted') {
+                drawJollyRogerSwatch(ctx, c.width, c.height);
+                return c.toDataURL('image/png');
+            }
             drawFrameBackground(ctx, c.width, c.height, theme, 0.55);
             return c.toDataURL('image/png');
         }
 
+        function syncWantedInputsVisibility() {
+            const box = document.getElementById('wanted-poster-inputs');
+            const nameInput = document.getElementById('wanted-name-input');
+            const bountyInput = document.getElementById('wanted-bounty-input');
+            if (!box) return;
+
+            const show = isWantedFrameActive();
+            box.classList.toggle('hidden', !show);
+
+            if (nameInput && !nameInput.dataset.bound) {
+                nameInput.dataset.bound = '1';
+                nameInput.value = state.wantedName;
+                nameInput.addEventListener('input', (e) => {
+                    state.wantedName = e.target.value;
+                    if (!selectionModal.classList.contains('hidden') && state.boothMode === 'photo') {
+                        updateLiveFramePreview();
+                    }
+                });
+            }
+
+            if (bountyInput && !bountyInput.dataset.bound) {
+                bountyInput.dataset.bound = '1';
+                bountyInput.value = state.wantedBounty;
+                bountyInput.addEventListener('input', (e) => {
+                    state.wantedBounty = e.target.value;
+                    if (!selectionModal.classList.contains('hidden') && state.boothMode === 'photo') {
+                        updateLiveFramePreview();
+                    }
+                });
+            }
+        }
+
         function renderFrameThemes() {
+            const isWantedAllowed = state.photoCount === 1 && state.orientation === 'portrait';
+            const availableThemes = FRAME_THEMES.filter(t => !t.onlyOnePortrait || isWantedAllowed);
+
+            if (!availableThemes.some(t => t.id === state.frameTheme.id)) {
+                state.frameTheme = FRAME_THEMES[0];
+            }
+
+            selectedThemeNameEl.textContent = state.frameTheme.name;
             stripThemeListEl.innerHTML = '';
-            FRAME_THEMES.forEach(theme => {
+
+            availableThemes.forEach(theme => {
                 const isSelected = state.frameTheme.id === theme.id;
                 const btn = document.createElement('button');
                 btn.type = 'button';
@@ -1471,14 +1657,22 @@
                     ? `<span class="w-5 h-5 rounded-full bg-black/45 backdrop-blur-xs flex items-center justify-center shadow"><i data-lucide="check" class="w-3.5 h-3.5 text-white"></i></span>`
                     : '';
                 btn.addEventListener('click', () => {
+                    const wasWanted = isWantedFrameActive();
                     state.frameTheme = theme;
                     selectedThemeNameEl.textContent = theme.name;
+                    const nowWanted = isWantedFrameActive();
+
+                    if (wasWanted !== nowWanted) {
+                        state.placedDoodles = [];
+                        renderStageOverlays();
+                    }
+
                     renderFrameThemes();
+                    syncWantedInputsVisibility();
+                    renderDoodleToolbar();
                     if (!selectionModal.classList.contains('hidden')) {
                         if (state.boothMode === 'photo') {
                             updateLiveFramePreview();
-                        } else {
-                            renderSingleVideoPreviewFrame();
                         }
                     }
                     lucide.createIcons();
@@ -1540,7 +1734,6 @@
             state.dateFormat = e.target.value;
             if (!selectionModal.classList.contains('hidden')) {
                 if (state.boothMode === 'photo') updateLiveFramePreview();
-                else renderSingleVideoPreviewFrame();
             }
         });
 
@@ -1652,7 +1845,6 @@
             ctx.drawImage(videoEl, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
             ctx.restore();
 
-            // Burn active live AR Face Effect directly into the captured photo
             if (state.activeEffect.id !== 'none') {
                 renderAREffectOnContext(ctx, canvas.width, canvas.height, state.isMirrored, performance.now());
             }
@@ -1668,6 +1860,7 @@
             state.capturedPool = [];
             state.selectedIndices = [];
             state.placedDoodles = [];
+            state.placedTexts = [];
 
             stripDots.innerHTML = Array.from({ length: totalShots }).map(() => `<span class="w-2 h-2 rounded-full bg-white/30 transition-all"></span>`).join('');
             stripProgressHud.classList.remove('hidden');
@@ -1716,6 +1909,7 @@
             state.selectedIndices = [];
             state.postFilter = FILTERS[0];
             state.placedDoodles = [];
+            state.placedTexts = [];
 
             step1Container.classList.remove('hidden');
             stepNumFrame.textContent = '2';
@@ -1729,9 +1923,10 @@
             selectionInstruction.textContent = `Tap ${rule.pickCount} photo${rule.pickCount > 1 ? 's' : ''} out of ${rule.totalShots} in order. Drag to move, use ⤢ to resize, or tap × to delete!`;
             renderShotPickerGrid();
             renderFrameThemes();
+            syncWantedInputsVisibility();
             renderPostFilterButtons();
             renderDoodleToolbar();
-            renderDoodlesOnStage();
+            renderStageOverlays();
             updateSelectionStateUI();
             resetPreviewZoom();
             selectionModal.classList.remove('hidden');
@@ -1774,9 +1969,22 @@
 
         function renderDoodleToolbar() {
             const toolbar = document.getElementById('doodle-toolbar');
+            const titleEl = document.getElementById('elements-palette-title');
             if (!toolbar) return;
+
+            const isOnePiece = isWantedFrameActive();
+            const items = isOnePiece ? ONE_PIECE_DOODLE_TYPES : DOODLE_TYPES;
+
+            if (titleEl) {
+                titleEl.innerHTML = isOnePiece
+                    ? `<span id="step-num-doodle" class="w-5 h-5 rounded-full bg-amber-700 text-white text-[11px] flex items-center justify-center font-bold">4</span>
+                       One Piece Elements (Drag to move • ⤢ to resize • × to delete)`
+                    : `<span id="step-num-doodle" class="w-5 h-5 rounded-full bg-[#ff5656] text-white text-[11px] flex items-center justify-center font-bold">4</span>
+                       Add Cute Elements (Drag to move • ⤢ to resize • × to delete)`;
+            }
+
             toolbar.innerHTML = '';
-            DOODLE_TYPES.forEach(item => {
+            items.forEach(item => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'flex-shrink-0 flex flex-col items-center gap-1 px-2.5 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 hover:bg-[#ff5656]/15 border border-zinc-200 dark:border-zinc-800 hover:border-[#ff5656] transition cursor-pointer';
@@ -1791,17 +1999,66 @@
                         type: item.id,
                         x: 24 + offset,
                         y: 24 + offset,
-                        size: 56
+                        size: 62
                     });
-                    renderDoodlesOnStage();
+                    renderStageOverlays();
                     if (state.boothMode === 'photo') updateLiveFramePreview();
                 });
                 toolbar.appendChild(btn);
             });
         }
 
-        function renderDoodlesOnStage() {
+        // Custom Text Box Controls (All Frames)
+        function initCustomTextControls() {
+            const input = document.getElementById('custom-text-input');
+            const addBtn = document.getElementById('add-custom-text-btn');
+            const fontSelect = document.getElementById('custom-text-font');
+            const colorInput = document.getElementById('custom-text-color');
+
+            document.querySelectorAll('[data-text-swatch]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (colorInput) colorInput.value = btn.dataset.textSwatch;
+                });
+            });
+
+            if (addBtn && input) {
+                const addNewText = () => {
+                    const raw = input.value.trim();
+                    if (!raw) {
+                        showToast('Type some text first!', 'info');
+                        input.focus();
+                        return;
+                    }
+                    const offset = (state.placedTexts.length * 20) % 100;
+                    state.placedTexts.push({
+                        id: Date.now() + Math.random(),
+                        text: raw,
+                        fontFamily: fontSelect ? fontSelect.value : "'Plus Jakarta Sans', sans-serif",
+                        color: colorInput ? colorInput.value : '#ff5656',
+                        x: 28 + offset,
+                        y: 44 + offset,
+                        fontSize: 20
+                    });
+                    input.value = '';
+                    renderStageOverlays();
+                    if (state.boothMode === 'photo') updateLiveFramePreview();
+                    showToast('Text added! Drag to move or ⤢ to resize.', 'success');
+                };
+
+                addBtn.addEventListener('click', addNewText);
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addNewText();
+                    }
+                });
+            }
+        }
+
+        function renderStageOverlays() {
             stickerCanvasLayer.innerHTML = '';
+
+            // 1. Render Draggable / Resizable / Deletable Stickers
             state.placedDoodles.forEach(doodle => {
                 const el = document.createElement('div');
                 el.dataset.doodleItem = '1';
@@ -1818,16 +2075,12 @@
                 const deleteBtn = el.querySelector('.doodle-delete-btn');
                 const resizeHandle = el.querySelector('.doodle-resize-handle');
 
-                deleteBtn.addEventListener('pointerdown', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-
+                deleteBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); });
                 deleteBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     state.placedDoodles = state.placedDoodles.filter(d => d.id !== doodle.id);
-                    renderDoodlesOnStage();
+                    renderStageOverlays();
                     if (state.boothMode === 'photo') updateLiveFramePreview();
                     showToast('Element removed', 'info');
                 });
@@ -1849,9 +2102,10 @@
                 resizeHandle.addEventListener('pointermove', (e) => {
                     if (!isResizing) return;
                     e.stopPropagation();
-                    const delta = Math.max(e.clientX - resizeStartX, e.clientY - resizeStartY);
+                    const z = (typeof previewZoomState !== 'undefined' && previewZoomState.scale) ? previewZoomState.scale : 1;
+                    const delta = Math.max(e.clientX - resizeStartX, e.clientY - resizeStartY) / z;
                     const stageRect = stickerCanvasLayer.getBoundingClientRect();
-                    const maxSizeByStage = Math.max(28, Math.min(stageRect.width - doodle.x, stageRect.height - doodle.y, 180));
+                    const maxSizeByStage = Math.max(28, Math.min((stageRect.width / z) - doodle.x, (stageRect.height / z) - doodle.y, 190));
                     const nextSize = Math.min(maxSizeByStage, Math.max(28, origSize + delta));
                     doodle.size = nextSize;
                     el.style.width = `${doodle.size}px`;
@@ -1870,7 +2124,7 @@
                 let startX = 0, startY = 0;
                 let origX = doodle.x, origY = doodle.y;
 
-                const onPointerDown = (e) => {
+                el.addEventListener('pointerdown', (e) => {
                     if (e.target === deleteBtn || e.target === resizeHandle) return;
                     e.preventDefault();
                     e.stopPropagation();
@@ -1880,9 +2134,9 @@
                     startX = e.clientX;
                     startY = e.clientY;
                     el.setPointerCapture(e.pointerId);
-                };
+                });
 
-                const onPointerMove = (e) => {
+                el.addEventListener('pointermove', (e) => {
                     if (!isDragging || isResizing) return;
                     const z = (typeof previewZoomState !== 'undefined' && previewZoomState.scale) ? previewZoomState.scale : 1;
                     const dx = (e.clientX - startX) / z;
@@ -1893,20 +2147,123 @@
                     doodle.y = Math.min(maxY, Math.max(0, origY + dy));
                     el.style.left = `${doodle.x}px`;
                     el.style.top = `${doodle.y}px`;
-                };
+                });
 
-                const onPointerUp = (e) => {
+                el.addEventListener('pointerup', (e) => {
                     if (!isDragging) return;
                     isDragging = false;
                     try { el.releasePointerCapture(e.pointerId); } catch (_) {}
-                    if (state.boothMode === 'photo') {
-                        updateLiveFramePreview();
-                    }
-                };
+                    if (state.boothMode === 'photo') updateLiveFramePreview();
+                });
 
-                el.addEventListener('pointerdown', onPointerDown);
-                el.addEventListener('pointermove', onPointerMove);
-                el.addEventListener('pointerup', onPointerUp);
+                stickerCanvasLayer.appendChild(el);
+            });
+
+            // 2. Render Draggable / Resizable / Deletable Custom Text Boxes
+            state.placedTexts.forEach(item => {
+                const el = document.createElement('div');
+                el.dataset.doodleItem = '1';
+                el.className = 'pointer-events-auto absolute cursor-grab active:cursor-grabbing select-none flex items-center justify-center group touch-none rounded-lg border border-dashed border-[#ff5656]/50 hover:border-[#ff5656] px-1.5 py-0.5';
+                el.style.left = `${item.x}px`;
+                el.style.top = `${item.y}px`;
+                el.style.fontFamily = item.fontFamily;
+                el.style.fontSize = `${item.fontSize}px`;
+                el.style.fontWeight = '800';
+                el.style.color = 'transparent';
+                el.style.whiteSpace = 'nowrap';
+                el.textContent = item.text;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.title = 'Delete text';
+                deleteBtn.className = 'doodle-delete-btn opacity-85 group-hover:opacity-100 transition-opacity absolute -top-2.5 -right-2.5 w-5 h-5 rounded-full bg-[#ff5656] hover:bg-[#e64545] text-white text-[12px] font-bold flex items-center justify-center shadow cursor-pointer';
+                deleteBtn.textContent = '×';
+
+                const resizeHandle = document.createElement('span');
+                resizeHandle.title = 'Drag corner to resize text';
+                resizeHandle.className = 'doodle-resize-handle opacity-85 group-hover:opacity-100 transition-opacity absolute -bottom-2.5 -right-2.5 w-5 h-5 rounded-full bg-white dark:bg-zinc-900 border-2 border-[#ff5656] text-[#ff5656] text-[10px] font-extrabold flex items-center justify-center shadow cursor-nwse-resize';
+                resizeHandle.textContent = '⤢';
+
+                el.appendChild(deleteBtn);
+                el.appendChild(resizeHandle);
+
+                deleteBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); });
+                deleteBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    state.placedTexts = state.placedTexts.filter(t => t.id !== item.id);
+                    renderStageOverlays();
+                    if (state.boothMode === 'photo') updateLiveFramePreview();
+                    showToast('Text removed', 'info');
+                });
+
+                let isResizing = false;
+                let resizeStartX = 0, resizeStartY = 0;
+                let origFontSize = item.fontSize;
+
+                resizeHandle.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isResizing = true;
+                    origFontSize = item.fontSize;
+                    resizeStartX = e.clientX;
+                    resizeStartY = e.clientY;
+                    resizeHandle.setPointerCapture(e.pointerId);
+                });
+
+                resizeHandle.addEventListener('pointermove', (e) => {
+                    if (!isResizing) return;
+                    e.stopPropagation();
+                    const z = (typeof previewZoomState !== 'undefined' && previewZoomState.scale) ? previewZoomState.scale : 1;
+                    const delta = Math.max(e.clientX - resizeStartX, e.clientY - resizeStartY) / z;
+                    item.fontSize = Math.min(64, Math.max(11, Math.round(origFontSize + delta * 0.45)));
+                    el.style.fontSize = `${item.fontSize}px`;
+                    if (state.boothMode === 'photo') updateLiveFramePreview();
+                });
+
+                resizeHandle.addEventListener('pointerup', (e) => {
+                    if (!isResizing) return;
+                    e.stopPropagation();
+                    isResizing = false;
+                    try { resizeHandle.releasePointerCapture(e.pointerId); } catch (_) {}
+                    if (state.boothMode === 'photo') updateLiveFramePreview();
+                });
+
+                let isDragging = false;
+                let startX = 0, startY = 0;
+                let origX = item.x, origY = item.y;
+
+                el.addEventListener('pointerdown', (e) => {
+                    if (e.target === deleteBtn || e.target === resizeHandle) return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isDragging = true;
+                    origX = item.x;
+                    origY = item.y;
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    el.setPointerCapture(e.pointerId);
+                });
+
+                el.addEventListener('pointermove', (e) => {
+                    if (!isDragging || isResizing) return;
+                    const z = (typeof previewZoomState !== 'undefined' && previewZoomState.scale) ? previewZoomState.scale : 1;
+                    const dx = (e.clientX - startX) / z;
+                    const dy = (e.clientY - startY) / z;
+                    const maxX = Math.max(0, stickerCanvasLayer.clientWidth - el.offsetWidth);
+                    const maxY = Math.max(0, stickerCanvasLayer.clientHeight - el.offsetHeight);
+                    item.x = Math.min(maxX, Math.max(0, origX + dx));
+                    item.y = Math.min(maxY, Math.max(0, origY + dy));
+                    el.style.left = `${item.x}px`;
+                    el.style.top = `${item.y}px`;
+                });
+
+                el.addEventListener('pointerup', (e) => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+                    if (state.boothMode === 'photo') updateLiveFramePreview();
+                });
 
                 stickerCanvasLayer.appendChild(el);
             });
@@ -2025,6 +2382,77 @@
         function getDoodleSvgHtml(type, size) {
             const sz = size || 52;
             switch (type) {
+                // --- ONE PIECE ELEMENTS ---
+                case 'op-straw-hat':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="40" cy="52" rx="34" ry="11" fill="#eab308" stroke="#713f12" stroke-width="2.5"/>
+                        <path d="M21 50C21 31 59 31 59 50" fill="#facc15" stroke="#713f12" stroke-width="2.5"/>
+                        <path d="M21.5 44C32 47 48 47 58.5 44L59 50C48 53 32 53 21 50Z" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.8"/>
+                        <path d="M30 33L28 38M40 31V37M50 33L52 38" stroke="#a16207" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>`;
+                case 'op-law-hat':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 44C18 24 62 24 62 44V52H18V44Z" fill="#f8fafc" stroke="#1e293b" stroke-width="2.5"/>
+                        <ellipse cx="40" cy="53" rx="26" ry="9" fill="#ffffff" stroke="#1e293b" stroke-width="2.5"/>
+                        <circle cx="29" cy="37" r="3.2" fill="#1e293b"/>
+                        <circle cx="42" cy="33" r="3.8" fill="#1e293b"/>
+                        <circle cx="52" cy="39" r="3" fill="#1e293b"/>
+                        <circle cx="35" cy="43" r="2.6" fill="#1e293b"/>
+                    </svg>`;
+                case 'op-chopper-hat':
+                    // Chopper's pink hat with upright white '+' emblem
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="40" cy="56" rx="31" ry="9" fill="#38bdf8" stroke="#0369a1" stroke-width="2.5"/>
+                        <path d="M22 54V33C22 25 58 25 58 33V54Z" fill="#f472b6" stroke="#9d174d" stroke-width="2.5"/>
+                        <path d="M40 33V47M33 40H47" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+                    </svg>`;
+                case 'op-sanji-mustache':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 42C33 34 19 35 16 44C14 50 21 53 25 49C28 46 25 42 22 44" stroke="#18181b" stroke-width="4.5" stroke-linecap="round"/>
+                        <path d="M40 42C47 34 61 35 64 44C66 50 59 53 55 49C52 46 55 42 58 44" stroke="#18181b" stroke-width="4.5" stroke-linecap="round"/>
+                    </svg>`;
+                case 'op-sanji-cig':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="rotate(-18 40 45)">
+                            <rect x="14" y="42" width="14" height="7" rx="1.5" fill="#f59e0b" stroke="#78350f" stroke-width="1.5"/>
+                            <rect x="28" y="42" width="34" height="7" rx="1" fill="#ffffff" stroke="#52525b" stroke-width="1.5"/>
+                            <rect x="61" y="42" width="4" height="7" rx="1" fill="#ef4444"/>
+                        </g>
+                        <path d="M62 32C59 26 65 22 61 15M67 30C65 24 70 20 67 13" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>`;
+                case 'op-ace-hat':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="40" cy="52" rx="34" ry="11" fill="#f97316" stroke="#7c2d12" stroke-width="2.5"/>
+                        <path d="M22 50C22 29 58 29 58 50" fill="#fb923c" stroke="#7c2d12" stroke-width="2.5"/>
+                        <rect x="22" y="43" width="36" height="6" fill="#dc2626"/>
+                        <circle cx="33" cy="46" r="4.5" fill="#38bdf8" stroke="#1e293b" stroke-width="1.3"/>
+                        <circle cx="47" cy="46" r="4.5" fill="#facc15" stroke="#1e293b" stroke-width="1.3"/>
+                    </svg>`;
+                case 'op-zoro-swords':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g transform="rotate(-14 40 40)">
+                            <rect x="8" y="22" width="16" height="5" rx="1" fill="#ffffff" stroke="#18181b" stroke-width="1.8"/>
+                            <rect x="24" y="19" width="3" height="11" fill="#eab308"/>
+                            <path d="M27 22H70L74 24.5L70 27H27V22Z" fill="#e2e8f0" stroke="#334155" stroke-width="1.5"/>
+
+                            <rect x="8" y="38" width="16" height="5" rx="1" fill="#dc2626" stroke="#18181b" stroke-width="1.8"/>
+                            <rect x="24" y="35" width="3" height="11" fill="#eab308"/>
+                            <path d="M27 38H70L74 40.5L70 43H27V38Z" fill="#e2e8f0" stroke="#334155" stroke-width="1.5"/>
+
+                            <rect x="8" y="54" width="16" height="5" rx="1" fill="#7e22ce" stroke="#18181b" stroke-width="1.8"/>
+                            <rect x="24" y="51" width="3" height="11" fill="#eab308"/>
+                            <path d="M27 54H70L74 56.5L70 59H27V54Z" fill="#e2e8f0" stroke="#334155" stroke-width="1.5"/>
+                        </g>
+                    </svg>`;
+                case 'op-devil-fruit':
+                    return `<svg width="${sz}" height="${sz}" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 24C40 16 46 11 52 14C55 15 54 19 50 19" stroke="#16a34a" stroke-width="4" stroke-linecap="round"/>
+                        <circle cx="40" cy="46" r="22" fill="#9333ea" stroke="#4c1d95" stroke-width="2.5"/>
+                        <path d="M33 41C35 38 40 39 39 43C38 47 31 46 31 41C31 35 39 32 44 36" stroke="#f3e8ff" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M47 51C49 48 53 50 51 54C49 57 43 56 44 51" stroke="#f3e8ff" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>`;
+
+                // --- CUTE ELEMENTS ---
                 case 'bow':
                     return `<svg width="${sz}" height="${sz * 0.8}" viewBox="0 0 80 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M38 28C26 12 8 14 10 28C12 40 28 36 38 28Z" stroke="#f4a2b8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="#f9c6d3" fill-opacity="0.45"/>
@@ -2120,7 +2548,235 @@
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
 
-            if (type === 'bow') {
+            // --- ONE PIECE ELEMENTS ---
+            if (type === 'op-straw-hat') {
+                ctx.fillStyle = '#eab308';
+                ctx.strokeStyle = '#713f12';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.ellipse(40, 52, 34, 11, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#facc15';
+                ctx.beginPath();
+                ctx.moveTo(21, 50);
+                ctx.bezierCurveTo(21, 31, 59, 31, 59, 50);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#dc2626';
+                ctx.strokeStyle = '#7f1d1d';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.moveTo(21.5, 44);
+                ctx.quadraticCurveTo(40, 48, 58.5, 44);
+                ctx.lineTo(59, 50);
+                ctx.quadraticCurveTo(40, 54, 21, 50);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else if (type === 'op-law-hat') {
+                ctx.fillStyle = '#f8fafc';
+                ctx.strokeStyle = '#1e293b';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(18, 52);
+                ctx.lineTo(18, 44);
+                ctx.bezierCurveTo(18, 24, 62, 24, 62, 44);
+                ctx.lineTo(62, 52);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.ellipse(40, 53, 26, 9, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#1e293b';
+                [[29, 37, 3.2], [42, 33, 3.8], [52, 39, 3], [35, 43, 2.6]].forEach(([cx, cy, r]) => {
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            } else if (type === 'op-chopper-hat') {
+                // Chopper's pink hat with blue brim and white upright '+' sign
+                ctx.fillStyle = '#38bdf8';
+                ctx.strokeStyle = '#0369a1';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.ellipse(40, 56, 31, 9, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#f472b6';
+                ctx.strokeStyle = '#9d174d';
+                ctx.beginPath();
+                ctx.moveTo(22, 54);
+                ctx.lineTo(22, 33);
+                ctx.bezierCurveTo(22, 25, 58, 25, 58, 33);
+                ctx.lineTo(58, 54);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 4.5;
+                ctx.beginPath();
+                ctx.moveTo(40, 33); ctx.lineTo(40, 47);
+                ctx.moveTo(33, 40); ctx.lineTo(47, 40);
+                ctx.stroke();
+            } else if (type === 'op-sanji-mustache') {
+                ctx.strokeStyle = '#18181b';
+                ctx.lineWidth = 4.5;
+                ctx.beginPath();
+                ctx.moveTo(40, 42);
+                ctx.bezierCurveTo(33, 34, 19, 35, 16, 44);
+                ctx.bezierCurveTo(14, 50, 21, 53, 25, 49);
+                ctx.bezierCurveTo(28, 46, 25, 42, 22, 44);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(40, 42);
+                ctx.bezierCurveTo(47, 34, 61, 35, 64, 44);
+                ctx.bezierCurveTo(66, 50, 59, 53, 55, 49);
+                ctx.bezierCurveTo(52, 46, 55, 42, 58, 44);
+                ctx.stroke();
+            } else if (type === 'op-sanji-cig') {
+                ctx.save();
+                ctx.translate(40, 45);
+                ctx.rotate(-18 * Math.PI / 180);
+                ctx.translate(-40, -45);
+
+                ctx.fillStyle = '#f59e0b';
+                ctx.strokeStyle = '#78350f';
+                ctx.lineWidth = 1.5;
+                ctx.fillRect(14, 42, 14, 7);
+                ctx.strokeRect(14, 42, 14, 7);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = '#52525b';
+                ctx.fillRect(28, 42, 34, 7);
+                ctx.strokeRect(28, 42, 34, 7);
+
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(61, 42, 4, 7);
+                ctx.restore();
+
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(62, 32);
+                ctx.bezierCurveTo(59, 26, 65, 22, 61, 15);
+                ctx.moveTo(67, 30);
+                ctx.bezierCurveTo(65, 24, 70, 20, 67, 13);
+                ctx.stroke();
+            } else if (type === 'op-ace-hat') {
+                ctx.fillStyle = '#f97316';
+                ctx.strokeStyle = '#7c2d12';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.ellipse(40, 52, 34, 11, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#fb923c';
+                ctx.beginPath();
+                ctx.moveTo(22, 50);
+                ctx.bezierCurveTo(22, 29, 58, 29, 58, 50);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#dc2626';
+                ctx.fillRect(22, 43, 36, 6);
+
+                ctx.strokeStyle = '#1e293b';
+                ctx.lineWidth = 1.3;
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(33, 46, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#facc15';
+                ctx.beginPath();
+                ctx.arc(47, 46, 4.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            } else if (type === 'op-zoro-swords') {
+                ctx.save();
+                ctx.translate(40, 40);
+                ctx.rotate(-14 * Math.PI / 180);
+                ctx.translate(-40, -40);
+
+                const swords = [
+                    { y: 22, hilt: '#ffffff' },
+                    { y: 38, hilt: '#dc2626' },
+                    { y: 54, hilt: '#7e22ce' }
+                ];
+                swords.forEach(sw => {
+                    ctx.fillStyle = sw.hilt;
+                    ctx.strokeStyle = '#18181b';
+                    ctx.lineWidth = 1.8;
+                    ctx.fillRect(8, sw.y, 16, 5);
+                    ctx.strokeRect(8, sw.y, 16, 5);
+
+                    ctx.fillStyle = '#eab308';
+                    ctx.fillRect(24, sw.y - 3, 3, 11);
+
+                    ctx.fillStyle = '#e2e8f0';
+                    ctx.strokeStyle = '#334155';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(27, sw.y);
+                    ctx.lineTo(70, sw.y);
+                    ctx.lineTo(74, sw.y + 2.5);
+                    ctx.lineTo(70, sw.y + 5);
+                    ctx.lineTo(27, sw.y + 5);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                });
+                ctx.restore();
+            } else if (type === 'op-devil-fruit') {
+                ctx.strokeStyle = '#16a34a';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(40, 24);
+                ctx.bezierCurveTo(40, 16, 46, 11, 52, 14);
+                ctx.bezierCurveTo(55, 15, 54, 19, 50, 19);
+                ctx.stroke();
+
+                ctx.fillStyle = '#9333ea';
+                ctx.strokeStyle = '#4c1d95';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.arc(40, 46, 22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.strokeStyle = '#f3e8ff';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(33, 41);
+                ctx.bezierCurveTo(35, 38, 40, 39, 39, 43);
+                ctx.bezierCurveTo(38, 47, 31, 46, 31, 41);
+                ctx.bezierCurveTo(31, 35, 39, 32, 44, 36);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(47, 51);
+                ctx.bezierCurveTo(49, 48, 53, 50, 51, 54);
+                ctx.bezierCurveTo(49, 57, 43, 56, 44, 51);
+                ctx.stroke();
+            }
+
+            // --- CUTE ELEMENTS ---
+            else if (type === 'bow') {
                 ctx.fillStyle = 'rgba(249, 198, 211, 0.55)';
                 ctx.strokeStyle = '#f4a2b8';
                 ctx.lineWidth = 5;
@@ -2148,7 +2804,6 @@
                 ctx.arc(40, 28, 5, 0, Math.PI * 2);
                 ctx.fill();
             } else if (type === 'lollipop') {
-                // Stick
                 ctx.strokeStyle = '#e2d9c8';
                 ctx.lineWidth = 5.5;
                 ctx.beginPath();
@@ -2163,7 +2818,6 @@
                 ctx.lineTo(40, 70);
                 ctx.stroke();
 
-                // Candy base circle
                 ctx.fillStyle = '#fff0f5';
                 ctx.strokeStyle = '#ff5d8f';
                 ctx.lineWidth = 3.5;
@@ -2172,7 +2826,6 @@
                 ctx.fill();
                 ctx.stroke();
 
-                // Pink spiral swirl
                 ctx.strokeStyle = '#ff5d8f';
                 ctx.lineWidth = 4;
                 ctx.beginPath();
@@ -2185,7 +2838,6 @@
                 }
                 ctx.stroke();
 
-                // Glossy highlight dot
                 ctx.fillStyle = 'rgba(255,255,255,0.85)';
                 ctx.beginPath();
                 ctx.arc(33, 21, 2.2, 0, Math.PI * 2);
@@ -2335,6 +2987,38 @@
             ctx.restore();
         }
 
+        function drawStageOverlaysOnCanvas(ctx, totalW) {
+            const previewImg = document.getElementById('live-frame-preview-img');
+            if (!previewImg || previewImg.clientWidth <= 0) return;
+
+            const scale = totalW / previewImg.clientWidth;
+
+            if (state.placedDoodles.length > 0) {
+                state.placedDoodles.forEach(doodle => {
+                    ctx.save();
+                    ctx.translate(doodle.x * scale, doodle.y * scale);
+                    drawCanvasDoodle(ctx, doodle.type, doodle.size * scale);
+                    ctx.restore();
+                });
+            }
+
+            if (state.placedTexts.length > 0) {
+                state.placedTexts.forEach(item => {
+                    ctx.save();
+                    const scaledFont = Math.round(item.fontSize * scale);
+                    ctx.font = `800 ${scaledFont}px ${item.fontFamily}`;
+                    ctx.fillStyle = item.color;
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.shadowColor = 'rgba(0,0,0,0.22)';
+                    ctx.shadowBlur = Math.max(2, 3 * scale);
+                    ctx.shadowOffsetY = Math.max(1, 1.5 * scale);
+                    ctx.fillText(item.text, (item.x + 6) * scale, (item.y + 3) * scale);
+                    ctx.restore();
+                });
+            }
+        }
+
         function drawPatternHeart(ctx, cx, cy, r, fillColor, strokeColor = null) {
             ctx.save();
             ctx.beginPath();
@@ -2355,6 +3039,9 @@
         }
 
         function renderSingleShotInFrameCanvas(shotCanvas) {
+            if (isWantedFrameActive()) {
+                return renderWantedPosterFrame(shotCanvas);
+            }
             const theme = state.frameTheme;
             const isPortrait = state.orientation === 'portrait';
             const showDate = dateStampToggle.checked;
@@ -2402,26 +3089,249 @@
             ctx.strokeRect(pad, pad, photoW, photoH);
 
             drawFrameFooter(ctx, totalW, totalH, footerH, theme, showDate);
-
-            const previewImg = document.getElementById('live-frame-preview-img');
-            if (previewImg && previewImg.clientWidth > 0 && state.placedDoodles.length > 0) {
-                const scale = totalW / previewImg.clientWidth;
-                state.placedDoodles.forEach(doodle => {
-                    const sx = doodle.x * scale;
-                    const sy = doodle.y * scale;
-                    const sSize = doodle.size * scale;
-
-                    ctx.save();
-                    ctx.translate(sx, sy);
-                    drawCanvasDoodle(ctx, doodle.type, sSize);
-                    ctx.restore();
-                });
-            }
+            drawStageOverlaysOnCanvas(ctx, totalW);
 
             return c;
         }
 
+        function drawBerrySymbol(ctx, cx, cy, h, color) {
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = Math.max(2.6, h * 0.095);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            ctx.beginPath();
+            ctx.moveTo(cx - h * 0.11, cy - h * 0.56);
+            ctx.lineTo(cx - h * 0.11, cy + h * 0.56);
+            ctx.moveTo(cx + h * 0.05, cy - h * 0.56);
+            ctx.lineTo(cx + h * 0.05, cy + h * 0.56);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(cx - h * 0.24, cy - h * 0.42);
+            ctx.lineTo(cx + h * 0.14, cy - h * 0.42);
+            ctx.bezierCurveTo(cx + h * 0.36, cy - h * 0.42, cx + h * 0.36, cy - h * 0.02, cx + h * 0.10, cy - h * 0.02);
+            ctx.lineTo(cx - h * 0.18, cy - h * 0.02);
+
+            ctx.moveTo(cx + h * 0.12, cy - h * 0.02);
+            ctx.bezierCurveTo(cx + h * 0.42, cy - h * 0.02, cx + h * 0.42, cy + h * 0.42, cx + h * 0.12, cy + h * 0.42);
+            ctx.lineTo(cx - h * 0.26, cy + h * 0.42);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Authentic One Piece Wanted Poster Frame (Exact Font & Crinkled Parchment Design, NO bullet dot in name)
+        function renderWantedPosterFrame(overrideShotCanvas = null) {
+            const showDate = dateStampToggle.checked;
+            const postFilterCss = state.postFilter.css;
+            const shotCanvas = overrideShotCanvas || (state.selectedIndices[0] !== undefined ? state.capturedPool[state.selectedIndices[0]] : null);
+
+            const totalW = 620;
+            const totalH = 880;
+            const canvas = overrideShotCanvas ? document.createElement('canvas') : document.getElementById('strip-canvas');
+            canvas.width = totalW;
+            canvas.height = totalH;
+            const ctx = canvas.getContext('2d');
+
+            // 1. Aged crinkled parchment gradient
+            const bgGrad = ctx.createRadialGradient(totalW * 0.5, totalH * 0.46, totalW * 0.1, totalW * 0.5, totalH * 0.5, totalH * 0.74);
+            bgGrad.addColorStop(0, '#ebe0c6');
+            bgGrad.addColorStop(0.68, '#dfd0ae');
+            bgGrad.addColorStop(1, '#c7b286');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, totalW, totalH);
+
+            // 2. Crinkled paper fibers & subtle wrinkle lines
+            ctx.save();
+            ctx.fillStyle = 'rgba(75, 53, 32, 0.045)';
+            for (let i = 0; i < 420; i++) {
+                const gx = (i * 97) % totalW;
+                const gy = (i * 151) % totalH;
+                ctx.fillRect(gx, gy, (i % 4) + 1, 2);
+            }
+            ctx.strokeStyle = 'rgba(75, 53, 32, 0.06)';
+            ctx.lineWidth = 1.2;
+            for (let c = 0; c < 18; c++) {
+                ctx.beginPath();
+                const sx = (c * 137) % totalW;
+                const sy = (c * 193) % totalH;
+                ctx.moveTo(sx, sy);
+                ctx.lineTo(sx + ((c % 2 === 0 ? 1 : -1) * 65), sy + 42);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            const ink = '#4b3520';
+            const inkSoft = '#63482d';
+            ctx.strokeStyle = 'rgba(75, 53, 32, 0.38)';
+            ctx.lineWidth = 6;
+            ctx.strokeRect(3, 3, totalW - 6, totalH - 6);
+
+            const sidePad = 48;
+
+            // 3. Tall Condensed Serif WANTED Title
+            ctx.save();
+            ctx.fillStyle = ink;
+            ctx.font = '900 108px "Cinzel", "Playfair Display", "EB Garamond", Georgia, serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.scale(0.95, 1.18);
+            ctx.fillText('WANTED', (totalW / 2) / 0.95, 22 / 1.18);
+            ctx.restore();
+
+            // 4. Photo Box
+            const photoX = sidePad;
+            const photoY = 172;
+            const photoW = totalW - sidePad * 2;
+            const photoH = 382;
+
+            ctx.save();
+            if (shotCanvas) {
+                const sw = shotCanvas.width || 960;
+                const sh = shotCanvas.height || 720;
+                const targetAspect = photoW / photoH;
+                const currentAspect = sw / sh;
+                let sx = 0, sy = 0, srcW = sw, srcH = sh;
+                if (currentAspect > targetAspect) {
+                    srcW = sh * targetAspect;
+                    sx = (sw - srcW) / 2;
+                } else if (currentAspect < targetAspect) {
+                    srcH = sw / targetAspect;
+                    sy = (sh - srcH) / 2;
+                }
+                ctx.filter = postFilterCss;
+                ctx.drawImage(shotCanvas, sx, sy, srcW, srcH, photoX, photoY, photoW, photoH);
+            } else {
+                ctx.fillStyle = '#d4c098';
+                ctx.fillRect(photoX, photoY, photoW, photoH);
+                ctx.fillStyle = inkSoft;
+                ctx.font = 'bold 20px "Cinzel", Georgia, serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('YOUR PHOTO HERE', totalW / 2, photoY + photoH / 2);
+            }
+            ctx.restore();
+
+            ctx.strokeStyle = ink;
+            ctx.lineWidth = 3.2;
+            ctx.strokeRect(photoX, photoY, photoW, photoH);
+
+            // 5. DEAD OR ALIVE
+            ctx.save();
+            ctx.fillStyle = ink;
+            ctx.font = '800 32px "Cinzel", "Playfair Display", Georgia, serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.scale(0.94, 1.12);
+            ctx.fillText('DEAD   OR   ALIVE', (totalW / 2) / 0.94, 588 / 1.12);
+            ctx.restore();
+
+            // 6. Decorative S-Scroll Flourishes
+            ctx.save();
+            ctx.strokeStyle = ink;
+            ctx.lineWidth = 3.2;
+            ctx.lineCap = 'round';
+            [-1, 1].forEach(dir => {
+                const sx = dir === -1 ? 30 : totalW - 30;
+                ctx.beginPath();
+                ctx.arc(sx + dir * 7, 616, 7, 0, Math.PI * 2);
+                ctx.moveTo(sx, 616);
+                ctx.bezierCurveTo(sx - dir * 6, 645, sx + dir * 10, 668, sx, 698);
+                ctx.arc(sx - dir * 7, 698, 7, 0, Math.PI * 2);
+                ctx.stroke();
+            });
+            ctx.restore();
+
+            // 7. Pirate Name (Clean spacing with NO bullet dot between words)
+            const rawName = (state.wantedName || 'UNKNOWN PIRATE').trim().toUpperCase();
+            const displayName = rawName.replace(/\s+/g, ' ');
+            ctx.save();
+            ctx.fillStyle = ink;
+            ctx.font = '900 52px "Cinzel", "Playfair Display", Georgia, serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.scale(0.76, 1.24);
+            ctx.fillText(displayName, (totalW / 2) / 0.76, 654 / 1.24, (totalW - 108) / 0.76);
+            ctx.restore();
+
+            // 8. Berry Symbol + Spaced Bounty Digits
+            const bountyVal = (state.wantedBounty || '0-').trim();
+            const spacedBounty = bountyVal.split('').join(' ');
+            ctx.save();
+            ctx.font = '800 34px "Cinzel", "Playfair Display", Georgia, serif';
+            const bountyTextW = ctx.measureText(spacedBounty).width;
+            const berryW = 34;
+            const groupW = berryW + 18 + bountyTextW;
+            const groupStartX = (totalW - groupW) / 2;
+
+            drawBerrySymbol(ctx, groupStartX + berryW / 2, 726, 36, ink);
+
+            ctx.fillStyle = ink;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(spacedBounty, groupStartX + berryW + 18, 728);
+            ctx.restore();
+
+            // 9. Bottom Left: hey nonna STUDIO + Date Stamp
+            ctx.save();
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillStyle = ink;
+            ctx.font = '800 18px "Montserrat", sans-serif';
+            ctx.fillText('hey nonna', sidePad, 804);
+
+            const brandW = ctx.measureText('hey nonna').width;
+            const badgeX = sidePad + brandW + 9;
+            const badgeW = 62;
+            const badgeH = 20;
+
+            ctx.strokeStyle = ink;
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.roundRect(badgeX, 787, badgeW, badgeH, 10);
+            ctx.stroke();
+
+            ctx.font = '800 9.5px "Montserrat", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('STUDIO', badgeX + badgeW / 2, 797);
+
+            if (showDate) {
+                const now = new Date();
+                const dateStr = state.dateFormat === 'short'
+                    ? `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${now.getFullYear()}`
+                    : now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).replace(',', '.');
+
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.fillStyle = inkSoft;
+                ctx.font = '700 13px "Space Mono", monospace';
+                ctx.fillText(dateStr, sidePad, 814);
+            }
+            ctx.restore();
+
+            // 10. Bottom Right: MARINE Stamp
+            ctx.save();
+            ctx.fillStyle = ink;
+            ctx.font = '900 38px "Cinzel", "Playfair Display", Georgia, serif';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'bottom';
+            ctx.scale(0.92, 1.12);
+            ctx.fillText('MARINE', (totalW - sidePad) / 0.92, 834 / 1.12);
+            ctx.restore();
+
+            // 11. Render placed One Piece stickers & Custom Text on top
+            drawStageOverlaysOnCanvas(ctx, totalW);
+
+            return overrideShotCanvas ? canvas : canvas.toDataURL('image/png');
+        }
+
         function renderComposedPhotoFrame() {
+            if (isWantedFrameActive()) {
+                return renderWantedPosterFrame();
+            }
             const theme = state.frameTheme;
             const count = state.photoCount;
             const isPortrait = state.orientation === 'portrait';
@@ -2516,21 +3426,7 @@
             });
 
             drawFrameFooter(ctx, totalW, totalH, footerH, theme, showDate);
-
-            const previewImg = document.getElementById('live-frame-preview-img');
-            if (previewImg && previewImg.clientWidth > 0 && state.placedDoodles.length > 0) {
-                const scale = totalW / previewImg.clientWidth;
-                state.placedDoodles.forEach(doodle => {
-                    const sx = doodle.x * scale;
-                    const sy = doodle.y * scale;
-                    const sSize = doodle.size * scale;
-
-                    ctx.save();
-                    ctx.translate(sx, sy);
-                    drawCanvasDoodle(ctx, doodle.type, sSize);
-                    ctx.restore();
-                });
-            }
+            drawStageOverlaysOnCanvas(ctx, totalW);
 
             return canvas.toDataURL('image/png');
         }
@@ -2721,7 +3617,8 @@
         clearPicksBtn.addEventListener('click', () => {
             state.selectedIndices = [];
             state.placedDoodles = [];
-            renderDoodlesOnStage();
+            state.placedTexts = [];
+            renderStageOverlays();
             renderShotPickerGrid();
             updateSelectionStateUI();
         });
@@ -2731,6 +3628,7 @@
             state.capturedPool = [];
             state.selectedIndices = [];
             state.placedDoodles = [];
+            state.placedTexts = [];
         });
 
         function updateSelectionStateUI() {
@@ -2815,6 +3713,7 @@
 
         document.addEventListener('keydown', (e) => {
             if (!welcomeCover.classList.contains('hidden')) return;
+            if (document.activeElement && ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
             if (e.code === 'Space' && selectionModal.classList.contains('hidden')) {
                 e.preventDefault();
                 handlePrimaryAction();
@@ -3168,22 +4067,28 @@
         closeModalBtn.addEventListener('click', closePreviewModal);
         previewModal.addEventListener('click', (e) => { if (e.target === previewModal) closePreviewModal(); });
 
-        document.getElementById('modal-print-gallery-btn').addEventListener('click', () => { window.print(); });
+        document.getElementById('modal-print-gallery-btn').addEventListener('click', () => {
+            window.print();
+        });
+
         modalDownloadBtn.addEventListener('click', () => {
             const item = state.gallery.find(i => i.id === state.activeModalItemId);
             if (item) downloadGalleryItem(item);
         });
-        modalDeleteBtn.addEventListener('click', () => { if (state.activeModalItemId) deleteFromGallery(state.activeModalItemId); });
 
-        window.addEventListener('DOMContentLoaded', () => {
-            applyTheme(systemPrefersDark);
-            renderEffectButtons();
-            renderFilterButtons();
-            renderFrameThemes();
-            renderDoodleToolbar();
-            updatePrimaryActionUI();
-            lucide.createIcons();
+        modalDeleteBtn.addEventListener('click', () => {
+            if (state.activeModalItemId) deleteFromGallery(state.activeModalItemId);
         });
+
+        // Init
+        applyTheme(systemPrefersDark);
+        renderEffectButtons();
+        renderFilterButtons();
+        renderPostFilterButtons();
+        renderFrameThemes();
+        initCustomTextControls();
+        updatePrimaryActionUI();
+        lucide.createIcons();
     </script>
 </body>
 </html>
